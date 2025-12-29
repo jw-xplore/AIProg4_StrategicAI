@@ -1,4 +1,5 @@
 #include "EntityManager.h"
+#include "Worker.h"
 
 EntityManager::~EntityManager()
 {
@@ -18,6 +19,11 @@ void EntityManager::UpdateEntities(float dTime)
 	{
 		entities[i]->Update(dTime);
 	}
+
+	for (int i = 0, size = workers.size(); i < size; i++)
+	{
+		workers[i]->Update(dTime);
+	}
 }
 
 void EntityManager::DrawEntities()
@@ -26,6 +32,11 @@ void EntityManager::DrawEntities()
 	for (int i = 0, size = entities.size(); i < size; i++)
 	{
 		entities[i]->Draw();
+	}
+
+	for (int i = 0, size = workers.size(); i < size; i++)
+	{
+		workers[i]->Draw();
 	}
 }
 
@@ -61,4 +72,19 @@ bool EntityManager::RemoveEntity(Entity* entity)
 
 	// Entity couldn't be removed 
 	return false;
+}
+
+// Type specific
+void EntityManager::AddWorkers(std::initializer_list<Worker*> workersList)
+{
+	int start = workers.size();
+	int end = workersList.size();
+
+	int size = start + end;
+	workers.resize(size);
+
+	for (int i = start; i < end; i++)
+	{
+		workers[i] = workersList.begin()[i - start];
+	}
 }

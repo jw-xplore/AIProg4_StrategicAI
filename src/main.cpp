@@ -22,18 +22,13 @@ int main()
 
     // World and components
     components = new ComponentsManager();
-    world = new World(8, 8, components);
+    entityManager = new EntityManager();
+    world = new World(8, 8, components, entityManager);
     
     // Setup entities
-    entityManager = new EntityManager();
-
     //Worker* worker = new Worker(components->steeringBehavior);
-    entityManager->AddEntities({
-        new Worker(components),
-        new Worker(components),
-        new Worker(components),
-        new Worker(components),
-        new Worker(components)
+    entityManager->AddWorkers({
+        new Worker(components, world)
     });
     
     // Gameloop
@@ -42,6 +37,7 @@ int main()
         // Update entities
         float dt = GetFrameTime();
         entityManager->UpdateEntities(dt);
+        world->Update(dt);
 
         // Rendering
         BeginDrawing();

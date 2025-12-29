@@ -9,18 +9,24 @@ Deleting entity manager handles deleting of registered entities.
 #include <vector>
 #include "Entity.h"
 
+class Worker;
+
 class EntityManager
 {
 private:
 	int idToAssign = 0; // Last assigned id + 1
-protected:
-	std::vector<Entity*> entities;
-
+	
 public:
+	std::vector<Entity*> entities;
+	std::vector<Worker*> workers;
+
 	~EntityManager();
 	void UpdateEntities(float dTime);
 	void DrawEntities();
 	void AddEntity(Entity* entity);
 	void AddEntities(std::initializer_list<Entity*> entitiesList);
 	bool RemoveEntity(Entity* entity);
+
+	// Type specific
+	void AddWorkers(std::initializer_list<Worker*> workersList);
 };

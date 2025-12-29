@@ -1,10 +1,11 @@
 #include "Worker.h"
 #include "ComponentsManager.h"
+#include "World.h"
 #include "SteeringBehavior.h"
 #include "ImageLoader.h"
 #include <iostream>
 
-Worker::Worker(ComponentsManager* componentsManager)
+Worker::Worker(ComponentsManager* componentsManager, World* world)
 {
     steeringBehavior = componentsManager->steeringBehavior;
     steeringBehavior->separationObstacles.push_back(this);
@@ -26,10 +27,9 @@ void Worker::Update(float dTime)
     steering->linear.y += separation.y;
 
     Entity::Update(dTime);
-    //std::cout << "steerOutput: " << steerOutput.x << std::endl;
 }
 
 void Worker::Draw()
 {
-    DrawTexture(image, position.x, position.y, WHITE);
+    DrawTexture(image, position.x - 16, position.y - 16, WHITE);
 }
