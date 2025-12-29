@@ -1,15 +1,18 @@
 #include "Worker.h"
+#include "ComponentsManager.h"
 #include "SteeringBehavior.h"
+#include "ImageLoader.h"
 #include <iostream>
 
-Worker::Worker(SteeringBehavior* steeringBehavior)
+Worker::Worker(ComponentsManager* componentsManager)
 {
-    this->steeringBehavior = steeringBehavior;
-    this->steeringBehavior->separationObstacles.push_back(this);
+    steeringBehavior = componentsManager->steeringBehavior;
+    steeringBehavior->separationObstacles.push_back(this);
+
+    image = componentsManager->imageLoader->textures[ELoadedImage::Worker];
 
     target = new SteerTarget();
     position = { 100, 100 };
-    image = LoadTexture("resources/npc_worker.png");
 }
 
 void Worker::Update(float dTime)

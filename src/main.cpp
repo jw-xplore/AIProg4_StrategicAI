@@ -1,11 +1,13 @@
 #include <raylib.h>
 #include "EntityManager.h"
 #include "ComponentsManager.h"
+#include "World.h"
 #include "Worker.h"
 
 // Game vars
-EntityManager* entityManager;
+World* world;
 ComponentsManager* components;
+EntityManager* entityManager;
 
 int main() 
 {
@@ -18,17 +20,20 @@ int main()
     InitWindow(screenWidth, screenHeight, "My first RAYLIB program!");
     SetTargetFPS(60);
 
+    // World and components
+    components = new ComponentsManager();
+    world = new World(8, 8, components);
+    
     // Setup entities
     entityManager = new EntityManager();
-    components = new ComponentsManager();
 
     //Worker* worker = new Worker(components->steeringBehavior);
     entityManager->AddEntities({
-        new Worker(components->steeringBehavior),
-        new Worker(components->steeringBehavior),
-        new Worker(components->steeringBehavior),
-        new Worker(components->steeringBehavior),
-        new Worker(components->steeringBehavior)
+        new Worker(components),
+        new Worker(components),
+        new Worker(components),
+        new Worker(components),
+        new Worker(components)
     });
     
     // Gameloop
@@ -41,6 +46,7 @@ int main()
         // Rendering
         BeginDrawing();
             ClearBackground(darkGreen);
+            world->Draw();
             entityManager->DrawEntities();
         EndDrawing();
     }
