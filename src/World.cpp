@@ -36,8 +36,6 @@ World::World(const char* path, ComponentsManager* cmpManager, EntityManager* ent
 void World::Update(float dTime)
 {
     // Discover world
-    int i;
-    int x, y;
     Vector2 pos;
 
     for (int i = 0; i < entityManager->workers.size(); i++)

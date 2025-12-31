@@ -3,6 +3,7 @@
 #include "ComponentsManager.h"
 #include "World.h"
 #include "Worker.h"
+#include "PathFinding.h"
 
 // Game vars
 World* world;
@@ -24,6 +25,7 @@ int main()
     components = new ComponentsManager();
     entityManager = new EntityManager();
     world = new World("resources/map.txt", components, entityManager);
+    components->InitPathfinding(world);
     
     // Setup entities
     //Worker* worker = new Worker(components->steeringBehavior);
@@ -44,6 +46,7 @@ int main()
             ClearBackground(darkGreen);
             world->Draw();
             entityManager->DrawEntities();
+            components->pathFinding->DrawGraph();
         EndDrawing();
     }
     
