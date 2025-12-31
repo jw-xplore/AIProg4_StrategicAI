@@ -11,7 +11,7 @@ EntityManager* entityManager;
 
 int main() 
 {
-    const Color darkGreen = {20, 160, 133, 255};
+    const Color darkGreen = {46, 112, 32, 255};
     
     constexpr int screenWidth = 800;
     constexpr int screenHeight = 600;
@@ -23,7 +23,7 @@ int main()
     // World and components
     components = new ComponentsManager();
     entityManager = new EntityManager();
-    world = new World(8, 8, components, entityManager);
+    world = new World("resources/map.txt", components, entityManager);
     
     // Setup entities
     //Worker* worker = new Worker(components->steeringBehavior);

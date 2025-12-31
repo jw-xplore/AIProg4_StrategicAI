@@ -15,5 +15,8 @@ enum ELoadedImage
 {
     Worker,
     Fog,
+    Tree,
+    CoalMine,
+    IronMine,
     ELoadedImageCount,
 };
