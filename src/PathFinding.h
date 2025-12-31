@@ -37,13 +37,12 @@ struct NodeRecordAs
 class PathFinding
 {
 public:
-	//std::vector<Node*> mapGraph;
-	//bool* walkable;
+	std::vector<Node*> lastSearch;
 	Node** nodes;
 	int width, height;
 
 	PathFinding(int w, int h);
-	//~PathFinding();
+	~PathFinding();
 
 	//void UpdateGraph(MapEntity* mapEntity);
 	void UpdateNode(int x, int y, bool walkable);
@@ -51,5 +50,11 @@ public:
 	void DrawGraph();
 
 	std::vector<Node*> AStar(Vector2 start, Vector2 end);
+
+	inline int ManhattanHeuristic(const Node* start, const Node* end);
+	NodeRecordAs SmallestAsRecord(std::vector<NodeRecordAs>& list);
+	bool ContainsAsRecord(const std::vector<NodeRecordAs>& list, Node* node);
+	NodeRecordAs* FindAsRecordFromNode(std::vector<NodeRecordAs>& list, Node* node);
+
 };
 
