@@ -9,6 +9,7 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include "Constants.h"
 
 World::World(const char* path, ComponentsManager* cmpManager, EntityManager* entManager)
 {
@@ -48,8 +49,8 @@ void World::Update(float dTime)
     for (int i = 0; i < entityManager->workers.size(); i++)
     {
         pos = entityManager->workers[i]->position;
-        pos.x = pos.x / tileSize;
-        pos.y = pos.y / tileSize;
+        pos.x = pos.x / GlobalVars::TILE_SIZE;
+        pos.y = pos.y / GlobalVars::TILE_SIZE;
 
         i = (int)pos.y * width + (int)pos.x;
         discovered[i] = true;
@@ -166,6 +167,6 @@ void World::Draw()
             case EMaterialResourceType::Wall: texture = *stoneTexture; break;
         }
 
-        DrawTexture(texture, x * tileSize, y * tileSize, WHITE);
+        DrawTexture(texture, x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, WHITE);
     }
 }

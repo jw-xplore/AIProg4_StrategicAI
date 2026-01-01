@@ -4,6 +4,7 @@
 #include "World.h"
 #include "Worker.h"
 #include "PathFinding.h"
+#include "Constants.h"
 
 // Game vars
 World* world;
@@ -12,12 +13,11 @@ EntityManager* entityManager;
 
 void DrawPath(std::vector<Node*> path)
 {
-    int tileSize = 32;
-    int halfSize = 16;
+    int halfSize = GlobalVars::TILE_SIZE / 2;
 
     for (int i = 0; i < path.size(); i++)
     {
-        DrawCircle(path[i]->x * tileSize + halfSize, path[i]->y * tileSize + halfSize, 8, BLUE);
+        DrawCircle(path[i]->x * GlobalVars::TILE_SIZE + halfSize, path[i]->y * GlobalVars::TILE_SIZE + halfSize, 8, BLUE);
     }
 }
 

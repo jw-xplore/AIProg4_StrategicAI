@@ -3,6 +3,7 @@
 #include <raymath.h>
 #include <iostream>
 #include "World.h";
+#include "Constants.h"
 
 PathFinding::PathFinding(int w, int h, World* world)
 {
@@ -162,8 +163,8 @@ Debug draw to display connectections in the graph
 
 void PathFinding::DrawGraph()
 {
-	int tileSize = 32;
-	int halfSize = 16;
+	int tileSize = GlobalVars::TILE_SIZE;
+	int halfSize = GlobalVars::TILE_SIZE / 2;
 
 	std::vector<Connection*> cons;
 
@@ -190,12 +191,12 @@ std::vector<Node*> PathFinding::AStar(Vector2 start, Vector2 end)
 	lastSearch.clear();
 
 	// Find start and end
-	int sx = (int)start.x / 32;
-	int sy = (int)start.y / 32;
+	int sx = (int)start.x / GlobalVars::TILE_SIZE;
+	int sy = (int)start.y / GlobalVars::TILE_SIZE;
 	Node* startNode = &nodes[sy][sx];
 
-	int ex = (int)end.x / 32;
-	int ey = (int)end.y / 32;
+	int ex = (int)end.x / GlobalVars::TILE_SIZE;
+	int ey = (int)end.y / GlobalVars::TILE_SIZE;
 	Node* endNode = &nodes[ey][ex];
 
 	std::cout << "start: " << sx << ", " << sy << " | end: " << ex << ", " << ey << "\n";

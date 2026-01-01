@@ -28,7 +28,6 @@ World map
 class World
 {
 public:
-    int tileSize = 32;
     int worldSize, width, height;
 
     // Map data
