@@ -10,6 +10,7 @@ ImageLoader::ImageLoader()
     textures = new Texture2D[ELoadedImage::ELoadedImageCount];
     
     textures[ELoadedImage::Worker] = LoadTexture("resources/npc_worker.png");
+    textures[ELoadedImage::Stone] = LoadTexture("resources/stone.png");
     textures[ELoadedImage::Fog] = LoadTexture("resources/fog.png");
     textures[ELoadedImage::Tree] = LoadTexture("resources/tree.png");
     textures[ELoadedImage::CoalMine] = LoadTexture("resources/coal_mine.png");

@@ -1,12 +1,16 @@
 #include "PathFinding.h"
 #include <raylib.h>
 #include <raymath.h>
+#include <iostream>
+#include "World.h";
 
-PathFinding::PathFinding(int w, int h)
+PathFinding::PathFinding(int w, int h, World* world)
 {
 	width = w;
 	height = h;
 	nodes = new Node*[h];
+
+	int i = 0;
 
 	// Define node graph
 	for (int y = 0; y < h; y++)
@@ -17,6 +21,9 @@ PathFinding::PathFinding(int w, int h)
 		{
 			nodes[y][x].x = x;
 			nodes[y][x].y = y;
+
+			nodes[y][x].walkable = world->mapResources[i].type != EMaterialResourceType::Wall;
+			i++;
 		}
 	}
 
@@ -25,7 +32,8 @@ PathFinding::PathFinding(int w, int h)
 	{
 		for (int x = 0; x < w; x++)
 		{
-			AddConnectionsToNode(&nodes[y][x], x, y);
+			if (nodes[y][x].walkable)
+				AddConnectionsToNode(&nodes[y][x], x, y);
 		}
 	}
 }
@@ -179,15 +187,24 @@ void PathFinding::DrawGraph()
 
 std::vector<Node*> PathFinding::AStar(Vector2 start, Vector2 end)
 {
+	lastSearch.clear();
+
 	// Find start and end
-	Node startNode = nodes[(int)start.y][(int)start.x];
-	Node endNode = nodes[(int)end.y][(int)end.x];
+	int sx = (int)start.x / 32;
+	int sy = (int)start.y / 32;
+	Node* startNode = &nodes[sy][sx];
+
+	int ex = (int)end.x / 32;
+	int ey = (int)end.y / 32;
+	Node* endNode = &nodes[ey][ex];
+
+	std::cout << "start: " << sx << ", " << sy << " | end: " << ex << ", " << ey << "\n";
 
 	// Initialize start node
 	NodeRecordAs startRecord;
-	startRecord.node = &startNode;
+	startRecord.node = startNode;
 	startRecord.costSoFar = 0;
-	startRecord.costEstimated = ManhattanHeuristic(&startNode, &endNode);
+	startRecord.costEstimated = ManhattanHeuristic(startNode, endNode);
 
 	// Setup open and closed list
 	std::vector<NodeRecordAs> open;
@@ -203,7 +220,7 @@ std::vector<Node*> PathFinding::AStar(Vector2 start, Vector2 end)
 		lastSearch.push_back(current.node);
 
 		// Is at the end?
-		if (current.node == &endNode)
+		if (current.node == endNode)
 			break;
 
 		// Loop through connections
@@ -245,7 +262,7 @@ std::vector<Node*> PathFinding::AStar(Vector2 start, Vector2 end)
 				currentNodeRecord = new NodeRecordAs();
 				currentNodeRecord->node = currentNode;
 
-				currentNodeHeuristics = ManhattanHeuristic(&startNode, &endNode);
+				currentNodeHeuristics = ManhattanHeuristic(startNode, endNode);
 			}
 
 			// Update node cost, estimate and connection
@@ -268,11 +285,11 @@ std::vector<Node*> PathFinding::AStar(Vector2 start, Vector2 end)
 	std::vector<Node*> path;
 
 	// Failed to find end?
-	if (current.node != &endNode)
+	if (current.node != endNode)
 		return path; // Empty path
 	
 	// Track path
-	while (current.node != &startNode)
+	while (current.node != startNode)
 	{
 		path.insert(path.end(), current.node);
 		current = *FindAsRecordFromNode(closed, current.connection->fromNode);

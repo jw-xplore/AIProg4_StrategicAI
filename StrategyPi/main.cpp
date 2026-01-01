@@ -10,6 +10,17 @@ World* world;
 ComponentsManager* components;
 EntityManager* entityManager;
 
+void DrawPath(std::vector<Node*> path)
+{
+    int tileSize = 32;
+    int halfSize = 16;
+
+    for (int i = 0; i < path.size(); i++)
+    {
+        DrawCircle(path[i]->x * tileSize + halfSize, path[i]->y * tileSize + halfSize, 8, BLUE);
+    }
+}
+
 int main()
 {
     const Color darkGreen = { 46, 112, 32, 255 };
@@ -19,7 +30,7 @@ int main()
 
     // Window setup
     InitWindow(screenWidth, screenHeight, "My first RAYLIB program!");
-    SetTargetFPS(60);
+    SetTargetFPS(5);
 
     // World and components
     components = new ComponentsManager();
@@ -29,10 +40,12 @@ int main()
 
     // Setup entities
     entityManager->workers.push_back(std::make_unique<Worker>(components, world));
-    entityManager->workers.push_back(std::make_unique<Worker>(components, world));
 
     //_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
     //_CrtDumpMemoryLeaks();
+
+    // Debug find path
+    std::vector<Node*> path = components->pathFinding->AStar({ 100, 100 }, { 400, 128 });
 
     // Gameloop
     while (!WindowShouldClose())
@@ -47,7 +60,10 @@ int main()
         ClearBackground(darkGreen);
         world->Draw();
         entityManager->DrawEntities();
+
         components->pathFinding->DrawGraph();
+        DrawPath(path);
+
         EndDrawing();
     }
 

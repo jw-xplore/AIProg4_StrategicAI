@@ -16,6 +16,7 @@ public:
 enum ELoadedImage
 {
     Worker,
+    Stone,
     Fog,
     Tree,
     CoalMine,

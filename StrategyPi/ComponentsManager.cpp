@@ -23,5 +23,5 @@ Setup pathfinding
 
 void ComponentsManager::InitPathfinding(World* world)
 {
-    pathFinding = new PathFinding(world->width, world->height);
+    pathFinding = new PathFinding(world->width, world->height, world);
 }

@@ -20,6 +20,7 @@ World::World(const char* path, ComponentsManager* cmpManager, EntityManager* ent
     //height = h;
 
     // Textures
+    stoneTexture = &cmpManager->imageLoader->textures[ELoadedImage::Stone];
     fogTexture = &cmpManager->imageLoader->textures[ELoadedImage::Fog];
     treeTexture = &cmpManager->imageLoader->textures[ELoadedImage::Tree];
     coalTexture = &cmpManager->imageLoader->textures[ELoadedImage::CoalMine];
@@ -110,6 +111,7 @@ bool World::LoadMap(const char* path)
                 case 'T': mapResources[i].type = EMaterialResourceType::Wood; mapResources[i].count = 50; break;
                 case 'C': mapResources[i].type = EMaterialResourceType::Coal; mapResources[i].count = 1000; break;
                 case 'I': mapResources[i].type = EMaterialResourceType::Iron; mapResources[i].count = 1000; break;
+                case 'X': mapResources[i].type = EMaterialResourceType::Wall; mapResources[i].count = 1; break;
                 default: mapResources[i].type = EMaterialResourceType::None; break;
                 }
                 
@@ -117,6 +119,7 @@ bool World::LoadMap(const char* path)
             }
         }
 
+        // Clearup
         for (int y = 0; y < height; y++)
         {
             delete[] map[y];
@@ -126,7 +129,6 @@ bool World::LoadMap(const char* path)
 
         // Stop reading
 		file.close();
-        //delete map;
 		return true;
 	}
 
@@ -161,6 +163,7 @@ void World::Draw()
             case EMaterialResourceType::Wood: texture = *treeTexture; break;
             case EMaterialResourceType::Coal: texture = *coalTexture; break;
             case EMaterialResourceType::Iron: texture = *ironTexture; break;
+            case EMaterialResourceType::Wall: texture = *stoneTexture; break;
         }
 
         DrawTexture(texture, x * tileSize, y * tileSize, WHITE);

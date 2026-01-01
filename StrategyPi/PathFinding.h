@@ -8,6 +8,8 @@ struct Vector2;
 
 struct Node;
 
+class World;
+
 struct Connection
 {
 	Node* fromNode;
@@ -41,7 +43,7 @@ public:
 	Node** nodes;
 	int width, height;
 
-	PathFinding(int w, int h);
+	PathFinding(int w, int h, World* world);
 	~PathFinding();
 
 	//void UpdateGraph(MapEntity* mapEntity);

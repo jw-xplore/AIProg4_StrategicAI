@@ -26,10 +26,12 @@ void Worker::Update(float dTime)
     target->position = GetMousePosition();
     target->prevPosition = GetMousePosition();
 
+    /*
     steering->linear = steeringBehavior->arrive(target, position, velocity, 20, 500, 32, 5);
     Vector2 separation = steeringBehavior->separate(this->steeringBehavior->separationObstacles, this, position, 20, 500);
     steering->linear.x += separation.x;
     steering->linear.y += separation.y;
+    */
 
     Entity::Update(dTime);
 }
