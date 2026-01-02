@@ -10,8 +10,12 @@
 
 Worker::Worker(ComponentsManager* componentsManager, World* world)
 {
-    steeringBehavior = componentsManager->steeringBehavior;
-    steeringBehavior->separationObstacles.push_back(this);
+    //steeringBehavior = componentsManager->steeringBehavior;
+    //steeringBehavior->separationObstacles.push_back(this);
+
+    steeringBehaviorData = componentsManager->steeringBehaviorData;
+
+    steeringBehaviorData->separationObstacles.push_back(this);
 
     image = componentsManager->imageLoader->textures[ELoadedImage::Worker];
 
@@ -81,9 +85,10 @@ bool Worker::FollowPath()
         //if (currentPathNode != 0)
             //steering->linear = steeringBehavior->seek(target, position, 50);
         //else
-            steering->linear = steeringBehavior->arrive(target, position, velocity, 50, 500, 5, 5);
+        //steering->linear = steeringBehavior->arrive(target, position, velocity, 50, 500, 5, 5);
+        steering->linear = SteeringBehavior::arrive(target, position, velocity, 50, 500, 5, 5);
 
-        Vector2 separation = steeringBehavior->separate(this->steeringBehavior->separationObstacles, this, position, 20, 500);
+        Vector2 separation = SteeringBehavior::separate(steeringBehaviorData->separationObstacles, this, position, 20, 500);
         steering->linear.x += separation.x;
         steering->linear.y += separation.y;
 

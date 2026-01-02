@@ -132,7 +132,6 @@
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PathFinding.cpp" />
-    <ClCompile Include="SteeringBehavior.cpp" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="Worker.cpp" />
     <ClCompile Include="World.cpp" />

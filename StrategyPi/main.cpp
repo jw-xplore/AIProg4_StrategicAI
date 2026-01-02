@@ -5,6 +5,7 @@
 #include "Worker.h"
 #include "PathFinding.h"
 #include "Constants.h"
+#include "SteeringBehavior.h"
 
 // Game vars
 World* world;
@@ -47,9 +48,9 @@ int main()
 
     // Debug find path
     //components->pathFinding->AStar({ 100, 100 }, { 400, 128 });
-    std::vector<Node>* path = components->pathFinding->AStar({ 100, 100 }, { 400, 128 });
-    entityManager->workers[0]->SetPath(path);
-    entityManager->workers[1]->SetPath(path);
+    //std::vector<Node>* path = components->pathFinding->AStar({ 100, 100 }, { 400, 128 });
+    //entityManager->workers[0]->SetPath(path);
+    //entityManager->workers[1]->SetPath(path);
 
     // Gameloop
     while (!WindowShouldClose())
@@ -66,16 +67,15 @@ int main()
         entityManager->DrawEntities();
 
         components->pathFinding->DrawGraph();
-        DrawPath(path);
+        //DrawPath(path);
 
         EndDrawing();
     }
 
-    delete path;
-
     // End
     CloseWindow();
 
+    // Cleanup
     delete world;
     delete entityManager;
     delete components;

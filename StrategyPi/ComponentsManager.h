@@ -2,7 +2,7 @@
 Holds references to major game services used acrross the game
 */
 
-class SteeringBehavior;
+class SteeringBehaviorData;
 class ImageLoader;
 class PathFinding;
 class World;
@@ -10,7 +10,7 @@ class World;
 class ComponentsManager
 {
 public:
-    SteeringBehavior* steeringBehavior;
+    SteeringBehaviorData* steeringBehaviorData;
     ImageLoader* imageLoader;
     PathFinding* pathFinding;
 

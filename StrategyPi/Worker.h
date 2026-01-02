@@ -3,7 +3,7 @@
 
 class ComponentsManager;
 class World;
-class SteeringBehavior;
+class SteeringBehaviorData;
 class SteerTarget;
 class ImageLoader;
 struct Node;
@@ -11,7 +11,7 @@ struct Node;
 class Worker : public Entity
 {
 public:
-    SteeringBehavior* steeringBehavior;
+    SteeringBehaviorData* steeringBehaviorData;
     SteerTarget* target;
     
     std::vector<Node>* path;

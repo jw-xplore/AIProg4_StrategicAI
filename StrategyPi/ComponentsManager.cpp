@@ -6,13 +6,13 @@
 
 ComponentsManager::ComponentsManager()
 {
-    steeringBehavior = new SteeringBehavior();
+    steeringBehaviorData = new SteeringBehaviorData();
     imageLoader = new ImageLoader();
 }
 
 ComponentsManager::~ComponentsManager()
 {
-    delete steeringBehavior;
+    delete steeringBehaviorData;
     delete imageLoader;
     delete pathFinding;
 }
