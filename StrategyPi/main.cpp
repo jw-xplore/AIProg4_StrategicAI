@@ -11,13 +11,13 @@ World* world;
 ComponentsManager* components;
 EntityManager* entityManager;
 
-void DrawPath(std::vector<Node*> path)
+void DrawPath(std::vector<Node>* path)
 {
     int halfSize = GlobalVars::TILE_SIZE / 2;
 
-    for (int i = 0; i < path.size(); i++)
+    for (int i = 0; i < path->size(); i++)
     {
-        DrawCircle(path[i]->x * GlobalVars::TILE_SIZE + halfSize, path[i]->y * GlobalVars::TILE_SIZE + halfSize, 8, BLUE);
+        DrawCircle((*path)[i].x * GlobalVars::TILE_SIZE, (*path)[i].y * GlobalVars::TILE_SIZE, 8, BLUE);
     }
 }
 
@@ -30,7 +30,7 @@ int main()
 
     // Window setup
     InitWindow(screenWidth, screenHeight, "My first RAYLIB program!");
-    SetTargetFPS(5);
+    SetTargetFPS(60);
 
     // World and components
     components = new ComponentsManager();
@@ -40,12 +40,16 @@ int main()
 
     // Setup entities
     entityManager->workers.push_back(std::make_unique<Worker>(components, world));
+    entityManager->workers.push_back(std::make_unique<Worker>(components, world));
 
     //_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
     //_CrtDumpMemoryLeaks();
 
     // Debug find path
-    std::vector<Node*> path = components->pathFinding->AStar({ 100, 100 }, { 400, 128 });
+    //components->pathFinding->AStar({ 100, 100 }, { 400, 128 });
+    std::vector<Node>* path = components->pathFinding->AStar({ 100, 100 }, { 400, 128 });
+    entityManager->workers[0]->SetPath(path);
+    entityManager->workers[1]->SetPath(path);
 
     // Gameloop
     while (!WindowShouldClose())
@@ -67,9 +71,11 @@ int main()
         EndDrawing();
     }
 
+    delete path;
+
     // End
     CloseWindow();
-    
+
     delete world;
     delete entityManager;
     delete components;

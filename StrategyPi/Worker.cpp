@@ -28,8 +28,8 @@ Worker::~Worker()
 
 void Worker::Update(float dTime)
 {
-    target->position = GetMousePosition();
-    target->prevPosition = GetMousePosition();
+    //target->position = GetMousePosition();
+    //target->prevPosition = GetMousePosition();
 
     /*
     steering->linear = steeringBehavior->arrive(target, position, velocity, 20, 500, 32, 5);
@@ -38,9 +38,14 @@ void Worker::Update(float dTime)
     steering->linear.y += separation.y;
     */
 
-    if (!path.empty())
+    if (path && !path->empty())
     {
         FollowPath();
+    }
+    else
+    {
+        steering->linear = { 0, 0 };
+        velocity = { 0, 0 };
     }
 
     Entity::Update(dTime);
@@ -54,31 +59,47 @@ void Worker::Draw()
 bool Worker::FollowPath()
 {
     // Path finished? 
-    if (currentPathNode >= path.size() - 1)
+    if (currentPathNode < 0)
     {
-        path.clear();
+        path->clear();
         currentPathNode = 0;
         return false;
     }
 
     // Follow next path point
-    Vector2 pos = { path[currentPathNode]->x * GlobalVars::TILE_SIZE, path[currentPathNode]->y * GlobalVars::TILE_SIZE };
+    int x = (*path)[currentPathNode].x * GlobalVars::TILE_SIZE;
+    int y = (*path)[currentPathNode].y * GlobalVars::TILE_SIZE;
+
+    Vector2 pos = { x, y };
     Vector2 dist = pos - position;
 
     if (Vector2LengthSqr(dist) > pathNodeDistance)
     {
         // Follow next point until reached
-        steering->linear = steeringBehavior->arrive(target, position, velocity, 20, 500, 32, 5);
+        target->position = pos;
+
+        //if (currentPathNode != 0)
+            //steering->linear = steeringBehavior->seek(target, position, 50);
+        //else
+            steering->linear = steeringBehavior->arrive(target, position, velocity, 50, 500, 5, 5);
+
         Vector2 separation = steeringBehavior->separate(this->steeringBehavior->separationObstacles, this, position, 20, 500);
         steering->linear.x += separation.x;
         steering->linear.y += separation.y;
+
+        DrawCircle(pos.x, pos.y, 10, RED);
+    }
+    else
+    {
+        // Progress to next
+        currentPathNode--;
     }
 
     return true;
 }
 
-void Worker::SetPath(std::vector<Node*> newPath)
+void Worker::SetPath(std::vector<Node>* newPath)
 {
     path = newPath;
-    currentPathNode = 0;
+    currentPathNode = path->size() - 1;
 }

@@ -62,6 +62,7 @@ PathFinding::~PathFinding()
 	}
 
 	delete nodes;
+	lastSearch.clear();
 }
 
 /*
@@ -186,7 +187,7 @@ void PathFinding::DrawGraph()
 	}
 }
 
-std::vector<Node*> PathFinding::AStar(Vector2 start, Vector2 end)
+std::vector<Node>* PathFinding::AStar(Vector2 start, Vector2 end)
 {
 	lastSearch.clear();
 
@@ -218,7 +219,7 @@ std::vector<Node*> PathFinding::AStar(Vector2 start, Vector2 end)
 	{
 		// Find smallest record - smallest estimated cost
 		current = SmallestAsRecord(open);
-		lastSearch.push_back(current.node);
+		lastSearch.push_back(*current.node);
 
 		// Is at the end?
 		if (current.node == endNode)
@@ -230,7 +231,7 @@ std::vector<Node*> PathFinding::AStar(Vector2 start, Vector2 end)
 			Connection* connection = current.node->connections[i];
 
 			Node* currentNode = connection->node;
-			NodeRecordAs* currentNodeRecord;
+			NodeRecordAs currentNodeRecord;
 			float currentNodeCost = current.costSoFar + connection->weight;
 
 			float currentNodeHeuristics;
@@ -239,51 +240,51 @@ std::vector<Node*> PathFinding::AStar(Vector2 start, Vector2 end)
 			if (ContainsAsRecord(closed, currentNode))
 			{
 				// Check if there is shorter route
-				currentNodeRecord = FindAsRecordFromNode(closed, currentNode);
-				if (currentNodeRecord->costSoFar <= currentNodeCost)
+				currentNodeRecord = *FindAsRecordFromNode(closed, currentNode);
+				if (currentNodeRecord.costSoFar <= currentNodeCost)
 					continue;
 
 				// Remove from closed list if it is shortest path
-				closed.erase(std::remove(closed.begin(), closed.end(), *currentNodeRecord), closed.end());
+				closed.erase(std::remove(closed.begin(), closed.end(), currentNodeRecord), closed.end());
 
-				currentNodeHeuristics = currentNodeRecord->costEstimated - currentNodeRecord->costSoFar;
+				currentNodeHeuristics = currentNodeRecord.costEstimated - currentNodeRecord.costSoFar;
 			}
 			else if (ContainsAsRecord(open, currentNode)) // Skip if the node is open and we ve not found a better route
 			{
-				currentNodeRecord = FindAsRecordFromNode(open, currentNode);
+				currentNodeRecord = *FindAsRecordFromNode(open, currentNode);
 
 				// Skip if route is not better
-				if (currentNodeRecord->costSoFar <= currentNodeCost)
+				if (currentNodeRecord.costSoFar <= currentNodeCost)
 					continue;
 
-				currentNodeHeuristics = connection->weight - currentNodeRecord->costSoFar;
+				currentNodeHeuristics = connection->weight - currentNodeRecord.costSoFar;
 			}
 			else // Record unvisited node
 			{
-				currentNodeRecord = new NodeRecordAs();
-				currentNodeRecord->node = currentNode;
+				currentNodeRecord = NodeRecordAs();
+				currentNodeRecord.node = currentNode;
 
 				currentNodeHeuristics = ManhattanHeuristic(startNode, endNode);
 			}
 
 			// Update node cost, estimate and connection
-			currentNodeRecord->connection = connection;
-			currentNodeRecord->costEstimated = currentNodeCost + currentNodeHeuristics;
+			currentNodeRecord.connection = connection;
+			currentNodeRecord.costEstimated = currentNodeCost + currentNodeHeuristics;
 
 			// Add to open list 
 			if (!ContainsAsRecord(open, currentNode))
 			{
-				open.insert(open.end(), *currentNodeRecord);
+				open.insert(open.end(), currentNodeRecord);
 			}
 		}
 
 		// Release current node when done with iterating through connections
 		open.erase(std::remove(open.begin(), open.end(), current), open.end());
-		closed.insert(closed.end(), current);
+		closed.push_back(current);
 	}
 
 	// Format path
-	std::vector<Node*> path;
+	std::vector<Node>* path = new std::vector<Node>;
 
 	// Failed to find end?
 	if (current.node != endNode)
@@ -292,7 +293,7 @@ std::vector<Node*> PathFinding::AStar(Vector2 start, Vector2 end)
 	// Track path
 	while (current.node != startNode)
 	{
-		path.insert(path.end(), current.node);
+		path->push_back(*current.node);
 		current = *FindAsRecordFromNode(closed, current.connection->fromNode);
 	}
 

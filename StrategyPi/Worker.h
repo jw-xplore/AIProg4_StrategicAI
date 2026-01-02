@@ -14,7 +14,7 @@ public:
     SteeringBehavior* steeringBehavior;
     SteerTarget* target;
     
-    std::vector<Node*> path;
+    std::vector<Node>* path;
     int currentPathNode = 0;
     float pathNodeDistance = 10;
 
@@ -27,5 +27,5 @@ public:
     void Draw() override;
 
     bool FollowPath();
-    void SetPath(std::vector<Node*> newPath);
+    void SetPath(std::vector<Node>* newPath);
 };

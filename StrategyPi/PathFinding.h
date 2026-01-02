@@ -22,6 +22,8 @@ struct Node
 	int x, y;
 	bool walkable = true;
 	std::vector<Connection*> connections;
+
+	~Node() {};
 };
 
 struct NodeRecordAs
@@ -39,7 +41,7 @@ struct NodeRecordAs
 class PathFinding
 {
 public:
-	std::vector<Node*> lastSearch;
+	std::vector<Node> lastSearch;
 	Node** nodes;
 	int width, height;
 
@@ -51,7 +53,7 @@ public:
 	void AddConnectionsToNode(Node* node, int x, int y);
 	void DrawGraph();
 
-	std::vector<Node*> AStar(Vector2 start, Vector2 end);
+	std::vector<Node>* AStar(Vector2 start, Vector2 end);
 
 	inline int ManhattanHeuristic(const Node* start, const Node* end);
 	NodeRecordAs SmallestAsRecord(std::vector<NodeRecordAs>& list);
