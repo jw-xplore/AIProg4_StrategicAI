@@ -133,6 +133,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PathFinding.cpp" />
     <ClCompile Include="SteeringBehavior.cpp" />
+    <ClCompile Include="Task.cpp" />
     <ClCompile Include="Worker.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -144,6 +145,7 @@
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="PathFinding.h" />
     <ClInclude Include="SteeringBehavior.h" />
+    <ClInclude Include="Task.h" />
     <ClInclude Include="Worker.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
