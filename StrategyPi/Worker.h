@@ -6,11 +6,13 @@ class World;
 class SteeringBehaviorData;
 class SteerTarget;
 class ImageLoader;
+class PathFinding;
 struct Node;
 
 class Worker : public Entity
 {
 public:
+    World* world;
     SteeringBehaviorData* steeringBehaviorData;
     SteerTarget* target;
     

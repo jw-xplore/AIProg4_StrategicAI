@@ -6,11 +6,13 @@
 #include "PathFinding.h"
 #include "Constants.h"
 #include "SteeringBehavior.h"
+#include "Commander.h"
 
 // Game vars
 World* world;
 ComponentsManager* components;
 EntityManager* entityManager;
+Commander* commander;
 
 void DrawPath(std::vector<Node>* path)
 {
@@ -38,19 +40,23 @@ int main()
     entityManager = new EntityManager();
     world = new World("resources/map.txt", components, entityManager);
     components->InitPathfinding(world);
+  
 
     // Setup entities
-    entityManager->workers.push_back(std::make_unique<Worker>(components, world));
-    entityManager->workers.push_back(std::make_unique<Worker>(components, world));
+    entityManager->workers.push_back(new Worker(components, world));
+    //entityManager->workers.push_back(std::make_shared<Worker>(components, world));
+    //entityManager->workers.push_back(std::make_shared<Worker>(components, world));
 
     //_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
     //_CrtDumpMemoryLeaks();
 
-    // Debug find path
+    // Debug find path - This testing causes leaks, it will be fixed with proper commander management
     //components->pathFinding->AStar({ 100, 100 }, { 400, 128 });
     //std::vector<Node>* path = components->pathFinding->AStar({ 100, 100 }, { 400, 128 });
     //entityManager->workers[0]->SetPath(path);
     //entityManager->workers[1]->SetPath(path);
+
+    commander = new Commander(entityManager);
 
     // Gameloop
     while (!WindowShouldClose())
@@ -59,6 +65,7 @@ int main()
         float dt = GetFrameTime();
         entityManager->UpdateEntities(dt);
         world->Update(dt);
+        commander->Update(dt);
 
         // Rendering
         BeginDrawing();

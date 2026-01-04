@@ -49,7 +49,7 @@ public:
 	~PathFinding();
 
 	//void UpdateGraph(MapEntity* mapEntity);
-	void UpdateNode(int x, int y, bool walkable);
+	//void UpdateNode(int x, int y, bool walkable);
 	void AddConnectionsToNode(Node* node, int x, int y);
 	void DrawGraph();
 

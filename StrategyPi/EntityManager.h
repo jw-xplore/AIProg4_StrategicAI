@@ -19,7 +19,7 @@ private:
 	
 public:
 	std::vector<Entity*> entities;
-	std::vector<std::unique_ptr<Worker>> workers;
+	std::vector<Worker*> workers;
 
 	~EntityManager();
 
@@ -30,5 +30,5 @@ public:
 	bool RemoveEntity(Entity* entity);
 
 	// Type specific
-	void AddWorkers(std::vector<std::unique_ptr<Worker>> workersList);
+	//void AddWorkers(std::vector<std::weak_ptr<Worker>> workersList);
 };

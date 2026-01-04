@@ -10,6 +10,12 @@ EntityManager::~EntityManager()
 	}
 
 	entities.clear();
+
+	for (int i = 0, size = workers.size(); i < size; i++)
+	{
+		delete workers[i];
+	}
+
 	workers.clear();
 }
 
@@ -76,8 +82,10 @@ bool EntityManager::RemoveEntity(Entity* entity)
 }
 
 // Type specific
-void EntityManager::AddWorkers(std::vector<std::unique_ptr<Worker>> workersList)
+/*
+void EntityManager::AddWorkers(std::vector<std::shared_ptr<Worker>> workersList)
 {
 	for (auto& w : workersList)
 		workers.push_back(std::move(w));
 }
+*/

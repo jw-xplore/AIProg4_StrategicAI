@@ -12,7 +12,7 @@ Worker::Worker(ComponentsManager* componentsManager, World* world)
 {
     //steeringBehavior = componentsManager->steeringBehavior;
     //steeringBehavior->separationObstacles.push_back(this);
-
+    this->world = world;
     steeringBehaviorData = componentsManager->steeringBehaviorData;
 
     steeringBehaviorData->separationObstacles.push_back(this);

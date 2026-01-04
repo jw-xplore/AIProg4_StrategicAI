@@ -126,17 +126,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AllSubtasks.cpp" />
+    <ClCompile Include="Commander.cpp" />
     <ClCompile Include="ComponentsManager.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PathFinding.cpp" />
+    <ClCompile Include="SubtaskDefinitions.cpp" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="Worker.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllSubtasks.h" />
+    <ClInclude Include="Commander.h" />
     <ClInclude Include="ComponentsManager.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Entity.h" />
@@ -144,6 +149,7 @@
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="PathFinding.h" />
     <ClInclude Include="SteeringBehavior.h" />
+    <ClInclude Include="SubtaskDefinitions.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="Worker.h" />
     <ClInclude Include="World.h" />
