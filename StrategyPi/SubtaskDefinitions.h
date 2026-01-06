@@ -8,7 +8,7 @@ enum EMaterialResourceType;
 namespace SubtaskDefinitions
 {
 	bool FindNearestResource(Worker& worker, EMaterialResourceType type);
-	bool FindNearestWood(Worker& worker);
+	bool MineAtPosition(Worker& worker);
 
 	bool Arrive(Worker& worker);
 }

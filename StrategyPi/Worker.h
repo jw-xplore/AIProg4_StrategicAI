@@ -8,14 +8,18 @@ class SteerTarget;
 class ImageLoader;
 class PathFinding;
 struct Node;
+struct MaterialResource;
+enum EMaterialResourceType;
 
 class Worker : public Entity
 {
 public:
+    // Refs
     World* world;
     SteeringBehaviorData* steeringBehaviorData;
     SteerTarget* target;
     
+    // Path
     PathFinding* pathfinding;
     std::vector<Node>* path;
     int currentPathNode = 0;
@@ -23,7 +27,13 @@ public:
 
     Texture2D image;
 
-    Worker(ComponentsManager* componentsManager, World* world);
+    EMaterialResourceType carriedMaterialType;
+    int carriedMaterialAmount;
+    int maxCarriedAmount = 20;
+    float mineDelay = 0.2f;
+    float mineTimer = 0; 
+
+    Worker(ComponentsManager* componentsManager, World* world, Vector2 startPos);
     ~Worker();
 
     void Update(float dTime) override;
@@ -31,4 +41,5 @@ public:
 
     bool FollowPath();
     void SetPath(std::vector<Node>* newPath);
+    bool MineAtPosition(float dTime);
 };

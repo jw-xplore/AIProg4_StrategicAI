@@ -52,12 +52,15 @@ bool SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceTy
 	return true;
 }
 
-bool SubtaskDefinitions::FindNearestWood(Worker& worker)
+bool SubtaskDefinitions::MineAtPosition(Worker& worker)
 {
-	return FindNearestResource(worker, EMaterialResourceType::Wood);
+	return worker.MineAtPosition(GetFrameTime());
 }
 
 bool SubtaskDefinitions::Arrive(Worker& worker)
 {
-	return worker.path->empty();
+	if (!worker.path)
+		return false;
+
+	return !worker.path->empty();
 }

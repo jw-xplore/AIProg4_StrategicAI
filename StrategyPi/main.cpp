@@ -28,8 +28,8 @@ int main()
 {
     const Color darkGreen = { 46, 112, 32, 255 };
 
-    constexpr int screenWidth = 800;
-    constexpr int screenHeight = 600;
+    constexpr int screenWidth = GlobalVars::SCREEN_WIDTH;
+    constexpr int screenHeight = GlobalVars::SCREEN_HEIGHT;
 
     // Window setup
     InitWindow(screenWidth, screenHeight, "My first RAYLIB program!");
@@ -43,7 +43,8 @@ int main()
   
 
     // Setup entities
-    entityManager->workers.push_back(new Worker(components, world));
+    entityManager->workers.push_back(new Worker(components, world, { 100, 100}));
+    entityManager->workers.push_back(new Worker(components, world, { 200, 300 }));
     //entityManager->workers.push_back(std::make_shared<Worker>(components, world));
     //entityManager->workers.push_back(std::make_shared<Worker>(components, world));
 
@@ -72,8 +73,9 @@ int main()
         ClearBackground(darkGreen);
         world->Draw();
         entityManager->DrawEntities();
+        commander->DrawUI();
 
-        components->pathFinding->DrawGraph();
+        //components->pathFinding->DrawGraph();
         //DrawPath(path);
 
         EndDrawing();

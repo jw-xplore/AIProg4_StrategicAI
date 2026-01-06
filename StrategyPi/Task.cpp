@@ -19,7 +19,7 @@ Task::Task(std::initializer_list<SubTaskFn> subtasks)
 
 Task::~Task()
 {
-	subtasks.clear();
+	subtaskFns.clear();
 }
 
 void Task::Update(float dTime)

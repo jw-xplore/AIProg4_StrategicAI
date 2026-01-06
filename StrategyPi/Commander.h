@@ -17,6 +17,13 @@ public:
 	struct Data;
 	Data* data;
 
+	// Resources
+	int wood = 0;
+	int coal = 0;
+	int iron = 0;
+	int swords = 0;
+	int soldiers = 0;
+
 	EntityManager* entityManager;
 
 	std::vector<Task> activeTasks;
@@ -25,5 +32,6 @@ public:
 	~Commander();
 
 	void Update(float dTime);
+	void DrawUI();
 };
 

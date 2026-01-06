@@ -5,10 +5,12 @@
 #include "ImageLoader.h"
 #include <iostream>
 #include "PathFinding.h"
+#include <raylib.h>
 #include <raymath.h>
 #include "Constants.h"
+#include <string>
 
-Worker::Worker(ComponentsManager* componentsManager, World* world)
+Worker::Worker(ComponentsManager* componentsManager, World* world, Vector2 startPos)
 {
     //steeringBehavior = componentsManager->steeringBehavior;
     //steeringBehavior->separationObstacles.push_back(this);
@@ -21,28 +23,27 @@ Worker::Worker(ComponentsManager* componentsManager, World* world)
     image = componentsManager->imageLoader->textures[ELoadedImage::Worker];
 
     target = new SteerTarget();
-    position = { 100, 100 };
+    position = startPos;
 
     pathNodeDistance = pathNodeDistance * pathNodeDistance; // Powering distance to be able use squared distance
+
+    carriedMaterialType = EMaterialResourceType::None;
+    carriedMaterialAmount = 0;
 }
 
 Worker::~Worker()
 {
+    if (path)
+    {
+        path->clear();
+        delete path; // NOTE: This helps, because path is stored here, but it feels prone to issues
+    }
+
     delete target;
 }
 
 void Worker::Update(float dTime)
 {
-    //target->position = GetMousePosition();
-    //target->prevPosition = GetMousePosition();
-
-    /*
-    steering->linear = steeringBehavior->arrive(target, position, velocity, 20, 500, 32, 5);
-    Vector2 separation = steeringBehavior->separate(this->steeringBehavior->separationObstacles, this, position, 20, 500);
-    steering->linear.x += separation.x;
-    steering->linear.y += separation.y;
-    */
-
     if (path && !path->empty())
     {
         FollowPath();
@@ -59,6 +60,11 @@ void Worker::Update(float dTime)
 void Worker::Draw()
 {
     DrawTexture(image, position.x - 16, position.y - 16, WHITE);
+
+    // Show carried material
+    std::string s = std::to_string(carriedMaterialAmount);
+    char const* txt = s.c_str();
+    DrawText(txt, position.x, position.y, 16, BLACK);
 }
 
 bool Worker::FollowPath()
@@ -108,4 +114,38 @@ void Worker::SetPath(std::vector<Node>* newPath)
 {
     path = newPath;
     currentPathNode = path->size() - 1;
+}
+
+// Gather resources at current position
+bool Worker::MineAtPosition(float dTime)
+{
+    // Overloaded
+    if (carriedMaterialAmount >= maxCarriedAmount)
+        return false;
+
+    // Check current position
+    int currentPos = (position.y / GlobalVars::TILE_SIZE) * world->width + (position.x / GlobalVars::TILE_SIZE);
+    MaterialResource currentPosResource = world->mapResources[currentPos];
+
+    if (currentPosResource.count <= 0)
+        return false;
+
+    if (carriedMaterialType == EMaterialResourceType::None || carriedMaterialType == currentPosResource.type)
+    {
+        // Mine
+        mineTimer -= dTime;
+
+        if (mineTimer <= 0)
+        {
+            // Gain resource and restart timer
+            carriedMaterialAmount++;
+            currentPosResource.count--;
+
+            mineTimer = mineDelay;
+        }
+
+        return true;
+    }
+
+    return false;
 }
