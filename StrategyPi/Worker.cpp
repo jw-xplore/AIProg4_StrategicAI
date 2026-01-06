@@ -14,6 +14,7 @@ Worker::Worker(ComponentsManager* componentsManager, World* world)
     //steeringBehavior->separationObstacles.push_back(this);
     this->world = world;
     steeringBehaviorData = componentsManager->steeringBehaviorData;
+    pathfinding = componentsManager->pathFinding;
 
     steeringBehaviorData->separationObstacles.push_back(this);
 
@@ -71,8 +72,8 @@ bool Worker::FollowPath()
     }
 
     // Follow next path point
-    int x = (*path)[currentPathNode].x * GlobalVars::TILE_SIZE;
-    int y = (*path)[currentPathNode].y * GlobalVars::TILE_SIZE;
+    int x = (*path)[currentPathNode].x * GlobalVars::TILE_SIZE + GlobalVars::TILE_SIZE * 0.5f;
+    int y = (*path)[currentPathNode].y * GlobalVars::TILE_SIZE + GlobalVars::TILE_SIZE * 0.5f;
 
     Vector2 pos = { x, y };
     Vector2 dist = pos - position;

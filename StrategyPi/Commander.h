@@ -22,6 +22,7 @@ public:
 	std::vector<Task> activeTasks;
 
 	Commander(EntityManager* entityManager);
+	~Commander();
 
 	void Update(float dTime);
 };

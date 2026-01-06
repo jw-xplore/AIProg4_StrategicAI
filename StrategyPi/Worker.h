@@ -16,6 +16,7 @@ public:
     SteeringBehaviorData* steeringBehaviorData;
     SteerTarget* target;
     
+    PathFinding* pathfinding;
     std::vector<Node>* path;
     int currentPathNode = 0;
     float pathNodeDistance = 10;

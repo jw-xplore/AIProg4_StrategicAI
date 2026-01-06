@@ -83,6 +83,7 @@ int main()
     CloseWindow();
 
     // Cleanup
+    delete commander;
     delete world;
     delete entityManager;
     delete components;

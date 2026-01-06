@@ -5,11 +5,13 @@
 #include "Worker.h"
 #include "Constants.h"
 #include "SteeringBehavior.h"
+#include "PathFinding.h"
 
 bool SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceType type)
 {
 	World* world = worker.world;
 	float closestDist = -1;
+	Vector2 closestPos;
 	int i = 0;
 
 	for (int y = 0; y < world->height; y++)
@@ -17,8 +19,10 @@ bool SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceTy
 		for (int x = 0; x < world->width; x++)
 		{
 			// Ignore hidden
+			/*
 			if (!world->discovered[i])
 				continue;
+			*/
 
 			// Compare searched resource
 			if (type == world->mapResources[i].type)
@@ -27,15 +31,20 @@ bool SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceTy
 				float dist = Vector2DistanceSqr(worker.position, pos);
 
 				if (closestDist > dist || closestDist == -1)
+				{
 					closestDist = dist;
+					closestPos = pos;
+				}
 			}
+
+			i++;
 		}
 	}
 
 	// Found - Task finished
 	if (closestDist != -1)
 	{
-		//worker.path = 
+		worker.SetPath(worker.pathfinding->AStar(worker.position, closestPos));
 		return false;
 	}
 

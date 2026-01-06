@@ -4,6 +4,7 @@
 #include "AllSubtasks.h"
 #include "Worker.h"
 #include "SubtaskDefinitions.h"
+#include "World.h"
 
 //Commander data storage
 struct Commander::Data
@@ -17,7 +18,8 @@ struct Commander::Data
 	*/
 
 	Task gatherWoodBlueprint = Task({
-		//[](Worker& worker) { return SubtaskDefinitions::TestMove(worker);  }
+		[](Worker& worker) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::Coal);  },
+		[](Worker& worker) { return SubtaskDefinitions::Arrive(worker); }
 		});
 
 	//Data();
@@ -31,10 +33,19 @@ Commander::Commander(EntityManager* entityManager)
 	
 	// Test command
 	//Task testTask = data->gatherWoodTask;
+
+	/*
 	Task testTask = data->gatherWoodBlueprint;
 	testTask.assignee = this->entityManager->workers[0];
 
 	activeTasks.push_back(testTask);
+	*/
+}
+
+Commander::~Commander()
+{
+	activeTasks.clear();
+	delete data;
 }
 
 void Commander::Update(float dTime)
