@@ -126,7 +126,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AllSubtasks.cpp" />
     <ClCompile Include="Commander.cpp" />
     <ClCompile Include="ComponentsManager.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -140,7 +139,6 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AllSubtasks.h" />
     <ClInclude Include="Commander.h" />
     <ClInclude Include="ComponentsManager.h" />
     <ClInclude Include="Constants.h" />
