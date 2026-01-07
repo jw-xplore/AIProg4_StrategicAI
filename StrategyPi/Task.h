@@ -11,7 +11,7 @@ public:
 
 class Worker;
 
-using SubTaskFn = std::function<bool(Worker&)>;
+using SubTaskFn = std::function<bool(Worker&, float dTime)>;
 
 // Holds several subtasks and manage their step by step execution
 class Task

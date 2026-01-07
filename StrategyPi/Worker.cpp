@@ -115,6 +115,14 @@ bool Worker::FollowPath()
 
 void Worker::SetPath(std::vector<Node>* newPath)
 {
+    // Clear old path
+    if (path)
+    {
+        path->clear();
+        delete path;
+    }
+
+    // Set new path
     path = newPath;
     currentPathNode = path->size() - 1;
 }

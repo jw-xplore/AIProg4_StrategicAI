@@ -13,26 +13,43 @@
 struct Commander::Data
 {
 	// Task types
-	/*
-	Task gatherWoodBlueprint = Task({
-		FindClosestResourceSubtaks()
-		});
 
-	*/
-
-	Commander* commander;
+	// TODO: Define exploration task
 
 	Task gatherWoodBlueprint = Task({
-		[](Worker& worker) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::Coal);  },
-		[](Worker& worker) { return SubtaskDefinitions::Arrive(worker); },
-		[](Worker& worker) { return SubtaskDefinitions::MineAtPosition(worker); },
-		[](Worker& worker) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::BuildingStorage);  },
-		[](Worker& worker) { return SubtaskDefinitions::Arrive(worker); },
-		[](Worker& worker) { return !worker.SubmitMaterial(); },
-		//[](Worker& worker) { return SubtaskDefinitions::SubmitResource(worker, commander); },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::Wood);  },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::MineAtPosition(worker, dTime); },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::BuildingStorage);  },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
+		[](Worker& worker, float dTime) { return !worker.SubmitMaterial(); },
 		});
 
-	//Data();
+	Task gatherCoalBlueprint = Task({
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::Coal);  },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::MineAtPosition(worker, dTime); },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::BuildingStorage);  },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
+		[](Worker& worker, float dTime) { return !worker.SubmitMaterial(); },
+		});
+
+	Task gatherIronBlueprint = Task({
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::Iron);  },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::MineAtPosition(worker, dTime); },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::BuildingStorage);  },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
+		[](Worker& worker, float dTime) { return !worker.SubmitMaterial(); },
+		});
+
+	Task buildSmithyBlueprint = Task({
+		
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
+		});
+
+	// TODO: Define create sword task
+	// TODO: Define create soldier task
 
 	// Resources
 	GatheredResources* resources;
@@ -47,7 +64,7 @@ Commander::Commander(ComponentsManager* componentManager, EntityManager* entityM
 	data->resources = componentManager->gatheredResources;
 
 	// Test command
-	Task testTask = data->gatherWoodBlueprint;
+	Task testTask = data->gatherIronBlueprint;
 	testTask.assignee = this->entityManager->workers[0];
 
 	Task testTask2 = data->gatherWoodBlueprint;

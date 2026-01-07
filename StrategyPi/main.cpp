@@ -7,13 +7,19 @@
 #include "Constants.h"
 #include "SteeringBehavior.h"
 #include "Commander.h"
+#include <string>
 
 // Game vars
+extern float TIME_SCALE = 1;
+
 World* world;
 ComponentsManager* components;
 EntityManager* entityManager;
 Commander* commander;
 
+/*
+Debug
+*/
 void DrawPath(std::vector<Node>* path)
 {
     int halfSize = GlobalVars::TILE_SIZE / 2;
@@ -24,6 +30,20 @@ void DrawPath(std::vector<Node>* path)
     }
 }
 
+void AdjustTimeScale()
+{
+    if (IsKeyDown(KEY_RIGHT))
+        TIME_SCALE += 0.1f;
+    else  if (IsKeyDown(KEY_LEFT) && TIME_SCALE > 0.1)
+        TIME_SCALE -= 0.1f;
+
+    // Show time
+    std::string strTime = "Time scale: " + std::to_string(TIME_SCALE);
+    char const* cTime = strTime.c_str();
+    DrawText(cTime, 50, 20, 24, YELLOW);
+}
+
+// Game functionality
 int main()
 {
     const Color darkGreen = { 46, 112, 32, 255 };
@@ -63,7 +83,7 @@ int main()
     while (!WindowShouldClose())
     {
         // Update entities
-        float dt = GetFrameTime();
+        float dt = GetFrameTime() * TIME_SCALE;
         entityManager->UpdateEntities(dt);
         world->Update(dt);
         commander->Update(dt);
@@ -77,6 +97,8 @@ int main()
 
         //components->pathFinding->DrawGraph();
         //DrawPath(path);
+
+        AdjustTimeScale();
 
         EndDrawing();
     }

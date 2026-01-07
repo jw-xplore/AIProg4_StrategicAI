@@ -53,25 +53,9 @@ bool SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceTy
 	return true;
 }
 
-bool SubtaskDefinitions::MineAtPosition(Worker& worker)
+bool SubtaskDefinitions::MineAtPosition(Worker& worker, float dTime)
 {
-	return worker.MineAtPosition(GetFrameTime());
-}
-
-bool SubtaskDefinitions::SubmitResource(Worker& worker, Commander* commander)
-{
-	/*
-	switch (worker.carriedMaterialType)
-	{
-	case EMaterialResourceType::Wood: commander->wood += worker.carriedMaterialAmount; break;
-	case EMaterialResourceType::Coal: commander->coal += worker.carriedMaterialAmount; break;
-	case EMaterialResourceType::Iron: commander->iron += worker.carriedMaterialAmount; break;
-	}
-	*/
-
-	worker.carriedMaterialAmount = 0;
-	worker.carriedMaterialType = EMaterialResourceType::None;
-	return false;
+	return worker.MineAtPosition(dTime);
 }
 
 bool SubtaskDefinitions::Arrive(Worker& worker)
@@ -80,4 +64,16 @@ bool SubtaskDefinitions::Arrive(Worker& worker)
 		return false;
 
 	return !worker.path->empty();
+}
+
+/*
+Choose random spot to create building - there should be nothing standing
+*/
+bool SubtaskDefinitions::PickBuildPosition(Worker& worker)
+{
+	int x = GetRandomValue(0, worker.world->width);
+	int y = GetRandomValue(0, worker.world->height);
+
+	//if (worker.world->mapResources[])
+	return false;
 }
