@@ -11,8 +11,6 @@ PathFinding::PathFinding(int w, int h, World* world)
 	height = h;
 	nodes = new Node*[h];
 
-	int i = 0;
-
 	// Define node graph
 	for (int y = 0; y < h; y++)
 	{
@@ -23,8 +21,7 @@ PathFinding::PathFinding(int w, int h, World* world)
 			nodes[y][x].x = x;
 			nodes[y][x].y = y;
 
-			nodes[y][x].walkable = world->mapResources[i].type != EMaterialResourceType::Wall;
-			i++;
+			nodes[y][x].walkable = world->mapResources[y][x].type != EMaterialResourceType::Wall;
 		}
 	}
 

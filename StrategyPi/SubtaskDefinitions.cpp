@@ -26,7 +26,7 @@ bool SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceTy
 			*/
 
 			// Compare searched resource
-			if (type == world->mapResources[i].type)
+			if (type == world->mapResources[y][x].type)
 			{
 				Vector2 pos = { x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE };
 				float dist = Vector2DistanceSqr(worker.position, pos);
@@ -71,9 +71,16 @@ Choose random spot to create building - there should be nothing standing
 */
 bool SubtaskDefinitions::PickBuildPosition(Worker& worker)
 {
-	int x = GetRandomValue(0, worker.world->width);
-	int y = GetRandomValue(0, worker.world->height);
+	int x = GetRandomValue(0, worker.world->width - 1);
+	int y = GetRandomValue(0, worker.world->height - 1);
 
-	//if (worker.world->mapResources[])
+	// Position is occupied?
+	if (worker.world->mapResources[y][x].type != EMaterialResourceType::None)
+		return true;
+
+	// Create path to position
+	Vector2 pos = { x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE };
+	worker.SetPath(worker.pathfinding->AStar(worker.position, pos));
+
 	return false;
 }

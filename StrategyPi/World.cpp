@@ -17,8 +17,6 @@ World::World(const char* path, ComponentsManager* cmpManager, EntityManager* ent
 
     // World setup
     LoadMap(path);
-    //width = w;
-    //height = h;
 
     // Textures
     stoneTexture = &cmpManager->imageLoader->textures[ELoadedImage::Stone];
@@ -27,6 +25,8 @@ World::World(const char* path, ComponentsManager* cmpManager, EntityManager* ent
     coalTexture = &cmpManager->imageLoader->textures[ELoadedImage::CoalMine];
     ironTexture = &cmpManager->imageLoader->textures[ELoadedImage::IronMine];
     storageTexture = &cmpManager->imageLoader->textures[ELoadedImage::Storage];
+    smithyTexture = &cmpManager->imageLoader->textures[ELoadedImage::Smithy];
+    barracksTexture = &cmpManager->imageLoader->textures[ELoadedImage::Barracks];
 
     // Discovered parts
     discovered = new bool[worldSize];
@@ -39,7 +39,13 @@ World::World(const char* path, ComponentsManager* cmpManager, EntityManager* ent
 World::~World()
 {
     delete discovered;
-    delete mapResources;
+
+    for (int y = 0; y < height; y++)
+    {
+        delete[] mapResources[y];
+    }
+
+    delete[] mapResources;
 }
 
 void World::Update(float dTime)
@@ -100,25 +106,23 @@ bool World::LoadMap(const char* path)
 
         // Define resources
         worldSize = width * height;
-        mapResources = new MaterialResource[worldSize];
-
-        int i = 0;
+        mapResources = new MaterialResource*[height];
 
         for (int y = 0; y < height; y++)
         {
+            mapResources[y] = new MaterialResource[width];
+
             for (int x = 0; x < width; x++)
             {
                 switch (map[y][x])
                 {
-                case 'T': mapResources[i].type = EMaterialResourceType::Wood; mapResources[i].count = 50; break;
-                case 'C': mapResources[i].type = EMaterialResourceType::Coal; mapResources[i].count = 1000; break;
-                case 'I': mapResources[i].type = EMaterialResourceType::Iron; mapResources[i].count = 1000; break;
-                case 'X': mapResources[i].type = EMaterialResourceType::Wall; mapResources[i].count = 1; break;
-                case 'S': mapResources[i].type = EMaterialResourceType::BuildingStorage; mapResources[i].count = 1; break;
-                default: mapResources[i].type = EMaterialResourceType::None; break;
+                case 'T': mapResources[y][x].type = EMaterialResourceType::Wood; mapResources[y][x].count = 50; break;
+                case 'C': mapResources[y][x].type = EMaterialResourceType::Coal; mapResources[y][x].count = 1000; break;
+                case 'I': mapResources[y][x].type = EMaterialResourceType::Iron; mapResources[y][x].count = 1000; break;
+                case 'X': mapResources[y][x].type = EMaterialResourceType::Wall; mapResources[y][x].count = 1; break;
+                case 'S': mapResources[y][x].type = EMaterialResourceType::BuildingStorage; mapResources[y][x].count = 1; break;
+                default: mapResources[y][x].type = EMaterialResourceType::None; break;
                 }
-                
-                i++;
             }
         }
 
@@ -151,23 +155,25 @@ void World::Draw()
         // Show fog 
         if (!discovered[i])
         {
-            //DrawTexture(*fogTexture, x * tileSize, y * tileSize, WHITE);
+            //DrawTexture(*fogTexture, x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, WHITE);
             //continue;
         }
 
         // Show resources
-        if (mapResources[i].count <= 0)
+        if (mapResources[y][x].count <= 0)
             continue;
 
         Texture2D texture;
 
-        switch (mapResources[i].type)
+        switch (mapResources[y][x].type)
         {
             case EMaterialResourceType::Wood: texture = *treeTexture; break;
             case EMaterialResourceType::Coal: texture = *coalTexture; break;
             case EMaterialResourceType::Iron: texture = *ironTexture; break;
             case EMaterialResourceType::Wall: texture = *stoneTexture; break;
             case EMaterialResourceType::BuildingStorage: texture = *storageTexture; break;
+            case EMaterialResourceType::BuildingSmithy: texture = *smithyTexture; break;
+            case EMaterialResourceType::BuildingBarracks: texture = *barracksTexture; break;
         }
 
         DrawTexture(texture, x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, WHITE);

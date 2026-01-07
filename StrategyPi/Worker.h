@@ -46,4 +46,5 @@ public:
     void SetPath(std::vector<Node>* newPath);
     bool MineAtPosition(float dTime);
     bool SubmitMaterial();
+    bool CreateBuilding(EMaterialResourceType type, float dTime);
 };

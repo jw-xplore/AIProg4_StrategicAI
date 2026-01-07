@@ -37,7 +37,7 @@ public:
 
     // Map data
     bool* discovered; // Blocks discovered by NCPs, Undiscovered will be covered in fog
-    MaterialResource* mapResources; // What NPCs can mine
+    MaterialResource** mapResources; // What NPCs can mine
 
     Texture2D* stoneTexture;
     Texture2D* fogTexture;
@@ -45,6 +45,8 @@ public:
     Texture2D* coalTexture;
     Texture2D* ironTexture;
     Texture2D* storageTexture;
+    Texture2D* smithyTexture;
+    Texture2D* barracksTexture;
 
     EntityManager* entityManager;
 

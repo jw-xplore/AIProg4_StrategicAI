@@ -137,8 +137,7 @@ bool Worker::MineAtPosition(float dTime)
     // Check current position
     int x = position.x / GlobalVars::TILE_SIZE;
     int y = position.y / GlobalVars::TILE_SIZE;
-    int currentPos = y * world->width + x;
-    MaterialResource currentPosResource = world->mapResources[currentPos];
+    MaterialResource currentPosResource = world->mapResources[y][x];
 
     if (currentPosResource.count <= 0)
         return false;
@@ -173,8 +172,8 @@ bool Worker::SubmitMaterial()
     // Check current position
     int x = position.x / GlobalVars::TILE_SIZE;
     int y = position.y / GlobalVars::TILE_SIZE;
-    int currentPos = y * world->width + x;
-    MaterialResource currentPosResource = world->mapResources[currentPos];
+
+    MaterialResource currentPosResource = world->mapResources[y][x];
 
     if (currentPosResource.type == EMaterialResourceType::BuildingStorage)
     {
@@ -188,4 +187,20 @@ bool Worker::SubmitMaterial()
     }
 
     return false;
+}
+
+// Create building on current position
+bool Worker::CreateBuilding(EMaterialResourceType type, float dTime)
+{
+    int x = position.x / GlobalVars::TILE_SIZE;
+    int y = position.y / GlobalVars::TILE_SIZE;
+    MaterialResource currentPosResource = world->mapResources[y][x];
+
+    // Check position empty
+    if (currentPosResource.type != EMaterialResourceType::None)
+        return false;
+
+    // Create building
+    world->mapResources[y][x].type = type; 
+    world->mapResources[y][x].count = 1;
 }

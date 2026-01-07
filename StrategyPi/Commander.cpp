@@ -44,8 +44,15 @@ struct Commander::Data
 		});
 
 	Task buildSmithyBlueprint = Task({
-		
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::PickBuildPosition(worker); },
 		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
+		[](Worker& worker, float dTime) { return worker.CreateBuilding(EMaterialResourceType::BuildingSmithy, dTime); },
+		});
+
+	Task buildBarracksBlueprint = Task({
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::PickBuildPosition(worker); },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
+		[](Worker& worker, float dTime) { return worker.CreateBuilding(EMaterialResourceType::BuildingBarracks, dTime); },
 		});
 
 	// TODO: Define create sword task
@@ -64,11 +71,8 @@ Commander::Commander(ComponentsManager* componentManager, EntityManager* entityM
 	data->resources = componentManager->gatheredResources;
 
 	// Test command
-	Task testTask = data->gatherIronBlueprint;
+	Task testTask = data->buildSmithyBlueprint;
 	testTask.assignee = this->entityManager->workers[0];
-
-	Task testTask2 = data->gatherWoodBlueprint;
-	testTask2.assignee = this->entityManager->workers[1];
 
 	activeTasks.push_back(testTask);
 	//activeTasks.push_back(testTask2);
