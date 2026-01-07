@@ -6,6 +6,7 @@ class Worker;
 
 class Task;
 class Subtask;
+class ComponentsManager;
 
 /*
 Assigns tasks to NPCs and manages their resources like path
@@ -17,18 +18,11 @@ public:
 	struct Data;
 	Data* data;
 
-	// Resources
-	int wood = 0;
-	int coal = 0;
-	int iron = 0;
-	int swords = 0;
-	int soldiers = 0;
-
 	EntityManager* entityManager;
 
 	std::vector<Task> activeTasks;
 
-	Commander(EntityManager* entityManager);
+	Commander(ComponentsManager* componentManager, EntityManager* entityManager);
 	~Commander();
 
 	void Update(float dTime);

@@ -48,6 +48,9 @@
     <ClCompile Include="SubtaskDefinitions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GatheredResources.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComponentsManager.h">
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SubtaskDefinitions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GatheredResources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

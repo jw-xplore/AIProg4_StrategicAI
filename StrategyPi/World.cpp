@@ -26,6 +26,7 @@ World::World(const char* path, ComponentsManager* cmpManager, EntityManager* ent
     treeTexture = &cmpManager->imageLoader->textures[ELoadedImage::Tree];
     coalTexture = &cmpManager->imageLoader->textures[ELoadedImage::CoalMine];
     ironTexture = &cmpManager->imageLoader->textures[ELoadedImage::IronMine];
+    storageTexture = &cmpManager->imageLoader->textures[ELoadedImage::Storage];
 
     // Discovered parts
     discovered = new bool[worldSize];
@@ -113,6 +114,7 @@ bool World::LoadMap(const char* path)
                 case 'C': mapResources[i].type = EMaterialResourceType::Coal; mapResources[i].count = 1000; break;
                 case 'I': mapResources[i].type = EMaterialResourceType::Iron; mapResources[i].count = 1000; break;
                 case 'X': mapResources[i].type = EMaterialResourceType::Wall; mapResources[i].count = 1; break;
+                case 'S': mapResources[i].type = EMaterialResourceType::BuildingStorage; mapResources[i].count = 1; break;
                 default: mapResources[i].type = EMaterialResourceType::None; break;
                 }
                 
@@ -165,6 +167,7 @@ void World::Draw()
             case EMaterialResourceType::Coal: texture = *coalTexture; break;
             case EMaterialResourceType::Iron: texture = *ironTexture; break;
             case EMaterialResourceType::Wall: texture = *stoneTexture; break;
+            case EMaterialResourceType::BuildingStorage: texture = *storageTexture; break;
         }
 
         DrawTexture(texture, x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, WHITE);

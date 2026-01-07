@@ -6,6 +6,8 @@
 #include "World.h"
 #include "Constants.h"
 #include <string>
+#include "GatheredResources.h"
+#include "ComponentsManager.h"
 
 //Commander data storage
 struct Commander::Data
@@ -18,27 +20,31 @@ struct Commander::Data
 
 	*/
 
+	Commander* commander;
+
 	Task gatherWoodBlueprint = Task({
 		[](Worker& worker) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::Coal);  },
 		[](Worker& worker) { return SubtaskDefinitions::Arrive(worker); },
-		[](Worker& worker) { return SubtaskDefinitions::MineAtPosition(worker); }
+		[](Worker& worker) { return SubtaskDefinitions::MineAtPosition(worker); },
+		[](Worker& worker) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::BuildingStorage);  },
+		[](Worker& worker) { return SubtaskDefinitions::Arrive(worker); },
+		[](Worker& worker) { return !worker.SubmitMaterial(); },
+		//[](Worker& worker) { return SubtaskDefinitions::SubmitResource(worker, commander); },
 		});
 
 	//Data();
+
+	// Resources
+	GatheredResources* resources;
 };
 
 // Commander
-Commander::Commander(EntityManager* entityManager)
+Commander::Commander(ComponentsManager* componentManager, EntityManager* entityManager)
 {
 	data = new Commander::Data{};
 	this->entityManager = entityManager;
-	
 
-	wood = 0;
-	coal = 0;
-	iron = 0;
-	swords = 0;
-	soldiers = 0;
+	data->resources = componentManager->gatheredResources;
 
 	// Test command
 	Task testTask = data->gatherWoodBlueprint;
@@ -71,23 +77,23 @@ void Commander::DrawUI()
 
 	int yPos = GlobalVars::SCREEN_HEIGHT - 50;
 
-	std::string strWood = "Wood: " + std::to_string(wood);
+	std::string strWood = "Wood: " + std::to_string(data->resources->wood);
 	char const* txtWood = strWood.c_str();
 	DrawText(txtWood, 50, yPos, 24, BLACK);
 
-	std::string strCoal = "Coal: " + std::to_string(coal);
+	std::string strCoal = "Coal: " + std::to_string(data->resources->coal);
 	char const* txtCoal = strCoal.c_str();
 	DrawText(txtCoal, 180, yPos, 24, BLACK);
 
-	std::string strIron = "Iron: " + std::to_string(iron);
+	std::string strIron = "Iron: " + std::to_string(data->resources->iron);
 	char const* txtIron = strIron.c_str();
 	DrawText(txtIron, 300, yPos, 24, BLACK);
 
-	std::string strSwords = "Swords: " + std::to_string(swords);
+	std::string strSwords = "Swords: " + std::to_string(data->resources->swords);
 	char const* txtSwords = strSwords.c_str();
 	DrawText(txtSwords, 450, yPos, 24, BLACK);
 
-	std::string stSoldiers = "Soldiers: " + std::to_string(soldiers);
+	std::string stSoldiers = "Soldiers: " + std::to_string(data->resources->soldiers);
 	char const* txtSoldiers = stSoldiers.c_str();
 	DrawText(txtSoldiers, 600, yPos, 24, BLACK);
 }

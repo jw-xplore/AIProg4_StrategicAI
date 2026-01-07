@@ -13,6 +13,11 @@ enum EMaterialResourceType
     Wood,
     Coal,
     Iron,
+    Sword,
+    Soldier,
+    BuildingStorage,
+    BuildingSmithy,
+    BuildingBarracks,
     EMaterialResourceTypeCount
 };
 
@@ -39,6 +44,7 @@ public:
     Texture2D* treeTexture;
     Texture2D* coalTexture;
     Texture2D* ironTexture;
+    Texture2D* storageTexture;
 
     EntityManager* entityManager;
 
@@ -48,4 +54,6 @@ public:
     bool LoadMap(const char* path);
     void Update(float dTime);
     void Draw();
+
+    void AddResource(EMaterialResourceType type, int amount);
 };

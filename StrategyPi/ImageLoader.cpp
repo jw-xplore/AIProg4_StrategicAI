@@ -15,4 +15,7 @@ ImageLoader::ImageLoader()
     textures[ELoadedImage::Tree] = LoadTexture("resources/tree.png");
     textures[ELoadedImage::CoalMine] = LoadTexture("resources/coal_mine.png");
     textures[ELoadedImage::IronMine] = LoadTexture("resources/iron_mine.png");
+    textures[ELoadedImage::Storage] = LoadTexture("resources/storage.png");
+    textures[ELoadedImage::Smithy] = LoadTexture("resources/smithy.png");
+    textures[ELoadedImage::Barracks] = LoadTexture("resources/barrack.png");
 }

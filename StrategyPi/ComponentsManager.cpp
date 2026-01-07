@@ -3,11 +3,13 @@
 #include "ImageLoader.h"
 #include "PathFinding.h"
 #include "World.h"
+#include "GatheredResources.h"
 
 ComponentsManager::ComponentsManager()
 {
     steeringBehaviorData = new SteeringBehaviorData();
     imageLoader = new ImageLoader();
+    gatheredResources = new GatheredResources();
 }
 
 ComponentsManager::~ComponentsManager()
@@ -15,6 +17,7 @@ ComponentsManager::~ComponentsManager()
     delete steeringBehaviorData;
     delete imageLoader;
     delete pathFinding;
+    delete gatheredResources;
 }
 
 /*

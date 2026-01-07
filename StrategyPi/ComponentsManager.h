@@ -6,6 +6,7 @@ class SteeringBehaviorData;
 class ImageLoader;
 class PathFinding;
 class World;
+class GatheredResources;
 
 class ComponentsManager
 {
@@ -13,6 +14,7 @@ public:
     SteeringBehaviorData* steeringBehaviorData;
     ImageLoader* imageLoader;
     PathFinding* pathFinding;
+    GatheredResources* gatheredResources;
 
     ComponentsManager();
     ~ComponentsManager();

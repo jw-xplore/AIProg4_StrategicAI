@@ -21,5 +21,8 @@ enum ELoadedImage
     Tree,
     CoalMine,
     IronMine,
+    Storage,
+    Smithy,
+    Barracks,
     ELoadedImageCount,
 };

@@ -57,7 +57,7 @@ int main()
     //entityManager->workers[0]->SetPath(path);
     //entityManager->workers[1]->SetPath(path);
 
-    commander = new Commander(entityManager);
+    commander = new Commander(components, entityManager);
 
     // Gameloop
     while (!WindowShouldClose())

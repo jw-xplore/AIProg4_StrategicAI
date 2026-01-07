@@ -7,6 +7,8 @@ class SteeringBehaviorData;
 class SteerTarget;
 class ImageLoader;
 class PathFinding;
+class GatheredResources;
+
 struct Node;
 struct MaterialResource;
 enum EMaterialResourceType;
@@ -18,6 +20,7 @@ public:
     World* world;
     SteeringBehaviorData* steeringBehaviorData;
     SteerTarget* target;
+    GatheredResources* gatheredResources;
     
     // Path
     PathFinding* pathfinding;
@@ -42,4 +45,5 @@ public:
     bool FollowPath();
     void SetPath(std::vector<Node>* newPath);
     bool MineAtPosition(float dTime);
+    bool SubmitMaterial();
 };

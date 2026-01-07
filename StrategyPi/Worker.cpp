@@ -9,11 +9,14 @@
 #include <raymath.h>
 #include "Constants.h"
 #include <string>
+#include "GatheredResources.h"
 
 Worker::Worker(ComponentsManager* componentsManager, World* world, Vector2 startPos)
 {
     //steeringBehavior = componentsManager->steeringBehavior;
     //steeringBehavior->separationObstacles.push_back(this);
+    gatheredResources = componentsManager->gatheredResources;
+
     this->world = world;
     steeringBehaviorData = componentsManager->steeringBehaviorData;
     pathfinding = componentsManager->pathFinding;
@@ -124,7 +127,9 @@ bool Worker::MineAtPosition(float dTime)
         return false;
 
     // Check current position
-    int currentPos = (position.y / GlobalVars::TILE_SIZE) * world->width + (position.x / GlobalVars::TILE_SIZE);
+    int x = position.x / GlobalVars::TILE_SIZE;
+    int y = position.y / GlobalVars::TILE_SIZE;
+    int currentPos = y * world->width + x;
     MaterialResource currentPosResource = world->mapResources[currentPos];
 
     if (currentPosResource.count <= 0)
@@ -140,9 +145,36 @@ bool Worker::MineAtPosition(float dTime)
             // Gain resource and restart timer
             carriedMaterialAmount++;
             currentPosResource.count--;
+            carriedMaterialType = currentPosResource.type;
 
             mineTimer = mineDelay;
         }
+
+        return true;
+    }
+
+    return false;
+}
+
+// Submit material at storage
+bool Worker::SubmitMaterial()
+{
+    if (carriedMaterialType == EMaterialResourceType::None)
+        return false;
+
+    // Check current position
+    int x = position.x / GlobalVars::TILE_SIZE;
+    int y = position.y / GlobalVars::TILE_SIZE;
+    int currentPos = y * world->width + x;
+    MaterialResource currentPosResource = world->mapResources[currentPos];
+
+    if (currentPosResource.type == EMaterialResourceType::BuildingStorage)
+    {
+        // Submit carried material
+        gatheredResources->AddResource(carriedMaterialType, carriedMaterialAmount);
+
+        carriedMaterialType = EMaterialResourceType::None;
+        carriedMaterialAmount = 0;
 
         return true;
     }

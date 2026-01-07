@@ -6,6 +6,7 @@
 #include "Constants.h"
 #include "SteeringBehavior.h"
 #include "PathFinding.h"
+#include "Commander.h"
 
 bool SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceType type)
 {
@@ -55,6 +56,22 @@ bool SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceTy
 bool SubtaskDefinitions::MineAtPosition(Worker& worker)
 {
 	return worker.MineAtPosition(GetFrameTime());
+}
+
+bool SubtaskDefinitions::SubmitResource(Worker& worker, Commander* commander)
+{
+	/*
+	switch (worker.carriedMaterialType)
+	{
+	case EMaterialResourceType::Wood: commander->wood += worker.carriedMaterialAmount; break;
+	case EMaterialResourceType::Coal: commander->coal += worker.carriedMaterialAmount; break;
+	case EMaterialResourceType::Iron: commander->iron += worker.carriedMaterialAmount; break;
+	}
+	*/
+
+	worker.carriedMaterialAmount = 0;
+	worker.carriedMaterialType = EMaterialResourceType::None;
+	return false;
 }
 
 bool SubtaskDefinitions::Arrive(Worker& worker)
