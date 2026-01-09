@@ -7,8 +7,10 @@
 #include "SteeringBehavior.h"
 #include "PathFinding.h"
 #include "Commander.h"
+#include "Task.h"
+#include "GatheredResources.h"
 
-bool SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceType type)
+ESubtaskState SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceType type)
 {
 	World* world = worker.world;
 	float closestDist = -1;
@@ -46,41 +48,116 @@ bool SubtaskDefinitions::FindNearestResource(Worker& worker, EMaterialResourceTy
 	if (closestDist != -1)
 	{
 		worker.SetPath(worker.pathfinding->AStar(worker.position, closestPos));
-		return false;
+		return ESubtaskState::Finnished;
 	}
 
 	// Not found
-	return true;
+	return ESubtaskState::Canceled;
 }
 
-bool SubtaskDefinitions::MineAtPosition(Worker& worker, float dTime)
+ESubtaskState SubtaskDefinitions::MineAtPosition(Worker& worker, float dTime)
 {
-	return worker.MineAtPosition(dTime);
+	// Overloaded - Finish to drop material
+	if (worker.carriedMaterialAmount >= worker.maxCarriedAmount)
+		return ESubtaskState::Finnished;
+
+	// Check current position
+	int x = worker.position.x / GlobalVars::TILE_SIZE;
+	int y = worker.position.y / GlobalVars::TILE_SIZE;
+
+	MaterialResource currentPosResource = worker.world->mapResources[y][x];
+
+	if (currentPosResource.count <= 0)
+		return ESubtaskState::Finnished;
+
+	// Check if can mine more resource of carried type
+	if (worker.carriedMaterialType != EMaterialResourceType::None && worker.carriedMaterialType != currentPosResource.type)
+		return ESubtaskState::Finnished;
+
+	// Mine
+	worker.MineAtPosition(dTime);
+	return ESubtaskState::Running;
 }
 
-bool SubtaskDefinitions::Arrive(Worker& worker)
+ESubtaskState SubtaskDefinitions::Arrive(Worker& worker)
 {
 	if (!worker.path)
-		return false;
+		return ESubtaskState::Canceled;
 
-	return !worker.path->empty();
+	// Finish on path being cleared
+	if (worker.path->empty())
+		return ESubtaskState::Finnished;
+
+	// Continue following path
+	return ESubtaskState::Running;
 }
 
 /*
 Choose random spot to create building - there should be nothing standing
 */
-bool SubtaskDefinitions::PickBuildPosition(Worker& worker)
+ESubtaskState SubtaskDefinitions::PickBuildPosition(Worker& worker)
 {
 	int x = GetRandomValue(0, worker.world->width - 1);
 	int y = GetRandomValue(0, worker.world->height - 1);
 
 	// Position is occupied?
 	if (worker.world->mapResources[y][x].type != EMaterialResourceType::None)
-		return true;
+		return ESubtaskState::Running;
 
 	// Create path to position
 	Vector2 pos = { x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE };
 	worker.SetPath(worker.pathfinding->AStar(worker.position, pos));
 
-	return false;
+	return ESubtaskState::Finnished;
+}
+
+ESubtaskState SubtaskDefinitions::SubmitMaterial(Worker& worker, float dTime)
+{
+	if (worker.SubmitMaterial())
+		return ESubtaskState::Finnished;
+
+	ESubtaskState::Canceled;
+}
+
+ESubtaskState SubtaskDefinitions::CreateBuilding(Worker& worker, float dTime, EMaterialResourceType type)
+{
+	if (worker.CreateBuilding(type, dTime))
+		return ESubtaskState::Finnished;
+
+	ESubtaskState::Canceled;
+}
+
+/*
+Add swords if at smithy and has resources
+*/
+ESubtaskState SubtaskDefinitions::CreateSword(Worker& worker)
+{
+	int x = worker.position.x / GlobalVars::TILE_SIZE;
+	int y = worker.position.y / GlobalVars::TILE_SIZE;
+
+	// Is at smithy?
+	if (worker.world->mapResources[y][x].type != EMaterialResourceType::BuildingSmithy)
+		return ESubtaskState::Canceled;
+
+	// Create sword
+	if (worker.gatheredResources->AddSword())
+		return ESubtaskState::Finnished;
+
+	return ESubtaskState::Canceled;
+}
+
+ESubtaskState SubtaskDefinitions::RecruitSoldier(Worker& worker)
+{
+	int x = worker.position.x / GlobalVars::TILE_SIZE;
+	int y = worker.position.y / GlobalVars::TILE_SIZE;
+
+	// Is at barracks?
+	if (worker.world->mapResources[y][x].type != EMaterialResourceType::BuildingBarracks)
+		return ESubtaskState::Canceled;
+
+	// Recruit soldier
+	if (worker.gatheredResources->AddSoldier())
+		return ESubtaskState::Finnished;
+
+	return ESubtaskState::Canceled;
 }

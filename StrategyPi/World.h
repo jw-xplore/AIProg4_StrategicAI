@@ -57,5 +57,5 @@ public:
     void Update(float dTime);
     void Draw();
 
-    void AddResource(EMaterialResourceType type, int amount);
+    void SetResource(int x, int y, EMaterialResourceType type, int amount);
 };

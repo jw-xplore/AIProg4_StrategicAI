@@ -2,25 +2,25 @@
 #include <vector>
 #include <functional>
 
-//Small event that actually makes character for do things
-class Subtask
-{
-public:
-	virtual bool Execute(float dTime) { return true; } // Task is considered done if returns false
-};
-
 class Worker;
 
-using SubTaskFn = std::function<bool(Worker&, float dTime)>;
+enum ESubtaskState
+{
+	Running,
+	Finnished,
+	Skipped,
+	Canceled,
+	ESubtaskStateCount
+};
+
+using SubTaskFn = std::function<ESubtaskState(Worker&, float dTime)>;
 
 // Holds several subtasks and manage their step by step execution
 class Task
 {
 public:
-	bool finished;
+	//bool finished;
 	int currentSubTask = 0;
-	std::vector<Subtask> subtasks;
-
 	std::vector<SubTaskFn> subtaskFns;
 
 	Worker* assignee;

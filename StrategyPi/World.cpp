@@ -34,6 +34,10 @@ World::World(const char* path, ComponentsManager* cmpManager, EntityManager* ent
     {
         discovered[i] = false;
     }
+
+    // Add testing buildings
+    SetResource(8, 2, EMaterialResourceType::BuildingSmithy, 1);
+    SetResource(9, 2, EMaterialResourceType::BuildingBarracks, 1);
 }
 
 World::~World()
@@ -178,4 +182,10 @@ void World::Draw()
 
         DrawTexture(texture, x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, WHITE);
     }
+}
+
+void World::SetResource(int x, int y, EMaterialResourceType type, int amount)
+{
+    mapResources[y][x].type = type;
+    mapResources[y][x].count = amount;
 }

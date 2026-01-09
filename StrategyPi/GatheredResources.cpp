@@ -21,3 +21,41 @@ void GatheredResources::AddResource(EMaterialResourceType type, int amount)
 	case EMaterialResourceType::Soldier: soldiers += amount; break;
 	}
 }
+
+bool GatheredResources::AddSword()
+{
+	// Check materials
+	if (iron < SWORD_IRON_COST)
+		return false;
+
+	if (coal < SWORD_COAL_COST)
+		return false;
+
+	// Exchange resources 
+	iron -= SWORD_IRON_COST;
+	coal -= SWORD_COAL_COST;
+	swords++;
+
+	return true;
+}
+
+bool GatheredResources::AddSoldier()
+{
+	// Check materials
+	if (iron < SOLDIER_IRON_COST)
+		return false;
+
+	if (wood < SOLDIER_WOOD_COST)
+		return false;
+
+	if (swords < SOLDIER_SWORD_COST)
+		return false;
+
+	// Exchange resources 
+	iron -= SOLDIER_IRON_COST;
+	wood -= SOLDIER_WOOD_COST;
+	swords -= SOLDIER_SWORD_COST;
+	soldiers++;
+
+	return true;
+}

@@ -201,6 +201,5 @@ bool Worker::CreateBuilding(EMaterialResourceType type, float dTime)
         return false;
 
     // Create building
-    world->mapResources[y][x].type = type; 
-    world->mapResources[y][x].count = 1;
+    world->SetResource(x, y, type, 1);
 }
