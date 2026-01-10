@@ -154,6 +154,8 @@ bool Worker::MineAtPosition(float dTime)
             currentPosResource.count--;
             carriedMaterialType = currentPosResource.type;
 
+            world->SetResource(x, y, currentPosResource.type, currentPosResource.count - 1);
+
             mineTimer = mineDelay;
         }
 

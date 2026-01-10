@@ -36,6 +36,7 @@ public:
     int worldSize, width, height;
 
     // Map data
+    int undiscoveredCount;
     bool* discovered; // Blocks discovered by NCPs, Undiscovered will be covered in fog
     MaterialResource** mapResources; // What NPCs can mine
 

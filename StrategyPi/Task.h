@@ -22,6 +22,7 @@ public:
 	//bool finished;
 	int currentSubTask = 0;
 	std::vector<SubTaskFn> subtaskFns;
+	bool repeat;
 
 	Worker* assignee;
 

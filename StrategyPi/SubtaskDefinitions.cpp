@@ -93,6 +93,51 @@ ESubtaskState SubtaskDefinitions::Arrive(Worker& worker)
 }
 
 /*
+Find closest undiscovered tile
+*/
+ESubtaskState SubtaskDefinitions::Discover(Worker& worker, float dTime)
+{
+	if (worker.world->undiscoveredCount <= 0)
+		return ESubtaskState::Canceled;
+
+	int i = 0;
+	int w = worker.world->height;
+	int h = worker.world->width;
+
+	Vector2 closestUndicoveredPos;
+	float closestDist = -1;
+
+	for (int y = 0; y < w; y++)
+	{
+		for (int x = 0; x < h; x++)
+		{
+			// Compare searched resource
+			if (!worker.world->discovered[i] && worker.world->mapResources[y][x].type != EMaterialResourceType::Wall)
+			{
+				Vector2 pos = { x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE };
+				float dist = Vector2DistanceSqr(worker.position, pos);
+
+				if (closestDist > dist || closestDist == -1)
+				{
+					closestDist = dist;
+					closestUndicoveredPos = pos;
+				}
+			}
+
+			i++;
+		}
+	}
+
+	// Check result
+	if (closestDist == -1)
+		return ESubtaskState::Canceled;
+
+	// Setup path
+	worker.SetPath(worker.pathfinding->AStar(worker.position, closestUndicoveredPos));
+	return ESubtaskState::Finnished;
+}
+
+/*
 Choose random spot to create building - there should be nothing standing
 */
 ESubtaskState SubtaskDefinitions::PickBuildPosition(Worker& worker)
@@ -116,7 +161,7 @@ ESubtaskState SubtaskDefinitions::SubmitMaterial(Worker& worker, float dTime)
 	if (worker.SubmitMaterial())
 		return ESubtaskState::Finnished;
 
-	ESubtaskState::Canceled;
+	return ESubtaskState::Canceled;
 }
 
 ESubtaskState SubtaskDefinitions::CreateBuilding(Worker& worker, float dTime, EMaterialResourceType type)
@@ -124,7 +169,7 @@ ESubtaskState SubtaskDefinitions::CreateBuilding(Worker& worker, float dTime, EM
 	if (worker.CreateBuilding(type, dTime))
 		return ESubtaskState::Finnished;
 
-	ESubtaskState::Canceled;
+	return ESubtaskState::Canceled;
 }
 
 /*

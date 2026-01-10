@@ -30,6 +30,8 @@ World::World(const char* path, ComponentsManager* cmpManager, EntityManager* ent
 
     // Discovered parts
     discovered = new bool[worldSize];
+    undiscoveredCount = worldSize;
+
     for (int i = 0; i < worldSize; i++)
     {
         discovered[i] = false;
@@ -64,6 +66,11 @@ void World::Update(float dTime)
         pos.y = pos.y / GlobalVars::TILE_SIZE;
 
         i = (int)pos.y * width + (int)pos.x;
+
+        // Discover
+        if (!discovered[i])
+            undiscoveredCount--;
+
         discovered[i] = true;
     }
 }
@@ -188,4 +195,9 @@ void World::SetResource(int x, int y, EMaterialResourceType type, int amount)
 {
     mapResources[y][x].type = type;
     mapResources[y][x].count = amount;
+
+    if (amount <= 0)
+    {
+        mapResources[y][x].type = EMaterialResourceType::None;
+    }
 }

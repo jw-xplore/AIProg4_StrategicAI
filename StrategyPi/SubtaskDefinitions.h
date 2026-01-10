@@ -14,6 +14,7 @@ namespace SubtaskDefinitions
 	ESubtaskState MineAtPosition(Worker& worker, float dTime);
 
 	ESubtaskState Arrive(Worker& worker);
+	ESubtaskState Discover(Worker& worker, float dTime);
 
 	ESubtaskState PickBuildPosition(Worker& worker);
 
