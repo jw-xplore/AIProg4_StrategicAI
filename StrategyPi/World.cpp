@@ -39,7 +39,7 @@ World::World(const char* path, ComponentsManager* cmpManager, EntityManager* ent
 
     // Add testing buildings
     SetResource(8, 2, EMaterialResourceType::BuildingSmithy, 1);
-    //SetResource(9, 2, EMaterialResourceType::BuildingBarracks, 1);
+    SetResource(9, 2, EMaterialResourceType::BuildingBarracks, 1);
 }
 
 World::~World()

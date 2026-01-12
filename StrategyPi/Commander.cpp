@@ -174,18 +174,31 @@ void Commander::AssignTask(Task& task)
 
 void Commander::DefineDecisionTrees()
 {
+	Action* woodTask = new CommanderDecisions::AssignTask(this, &data->gatherWoodBlueprint);
+	Action* coalTask = new CommanderDecisions::AssignTask(this, &data->gatherCoalBlueprint);
+	Action* ironTask = new CommanderDecisions::AssignTask(this, &data->gatherIronBlueprint);
+	Action* swordTask = new CommanderDecisions::AssignTask(this, &data->createSwordBlueprint);
+
 	// Create soldier - main consideration
 	data->soldierCreateTree = new CommanderDecisions::BuildingExists(this, EMaterialResourceType::BuildingBarracks);
 
-	Decision* buildingDec = dynamic_cast<Decision*>(data->soldierCreateTree);
-	Decision* resourceDecFinal = dynamic_cast<Decision*>(GatherResourcesTree(EMaterialResourceType::Soldier, buildingDec->positive));
-	resourceDecFinal->positive = new CommanderDecisions::AssignTask(this, &data->recruitSoldierBlueprint);
+	Decision* barracksDec = dynamic_cast<Decision*>(data->soldierCreateTree);
+
+	CommanderDecisions::HasRequiredResources* soldierResourceDec = new CommanderDecisions::HasRequiredResources(this, EMaterialResourceType::Soldier);
+	soldierResourceDec->SetupNodes(woodTask, coalTask, ironTask, swordTask);
+	soldierResourceDec->continueNode = new CommanderDecisions::AssignTask(this, &data->recruitSoldierBlueprint);
+
+	barracksDec->positive = soldierResourceDec;
+
+	//Decision* resourceDecFinal = dynamic_cast<Decision*>(GatherResourcesTree(EMaterialResourceType::Soldier, buildingDec->positive));
+	//resourceDecFinal->positive = new CommanderDecisions::AssignTask(this, &data->recruitSoldierBlueprint);
 
 	// Build barrack if none exists
-	resourceDecFinal = dynamic_cast<Decision*>(GatherResourcesTree(EMaterialResourceType::BuildingBarracks, buildingDec->negative));
-	resourceDecFinal->positive = new CommanderDecisions::AssignTask(this, &data->buildBarracksBlueprint);
+	//resourceDecFinal = dynamic_cast<Decision*>(GatherResourcesTree(EMaterialResourceType::BuildingBarracks, buildingDec->negative));
+	//resourceDecFinal->positive = new CommanderDecisions::AssignTask(this, &data->buildBarracksBlueprint);
 
-	resourceDecFinal = dynamic_cast<Decision*>(GatherResourcesTree(EMaterialResourceType::BuildingBarracks, resourceDecFinal->negative));
+	// 
+	//resourceDecFinal = dynamic_cast<Decision*>(GatherResourcesTree(EMaterialResourceType::BuildingBarracks, resourceDecFinal->negative));
 }
 
 DecisionTreeNode* Commander::GatherResourcesTree(EMaterialResourceType goal, DecisionTreeNode*& connection)

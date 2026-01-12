@@ -35,3 +35,32 @@ void AssignTask::execute()
 {
 	commander->AssignTask(*task);
 }
+
+//---------------------------------------------------------------
+// Custom
+//---------------------------------------------------------------
+
+/// <summary>
+/// Returns node releated to handeling a missing resource, otherwise return continue behavior node
+/// Each node option should be related to gathering the given resource
+/// </summary>
+/// <returns></returns>
+DecisionTreeNode* HasRequiredResources::makeDecision()
+{
+	GatheredResources* res = commander->resources;
+	PlayerResources price = res->prices[goal];
+
+	if (res->wood - price.wood < 0)
+		return woodNode;
+
+	if (res->coal - price.coal < 0)
+		return coalNode;
+
+	if (res->iron - price.iron < 0)
+		return ironNode;
+
+	if (res->swords - price.swords < 0)
+		return swordsNode;
+
+	return continueNode;
+}

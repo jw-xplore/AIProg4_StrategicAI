@@ -56,4 +56,33 @@ namespace CommanderDecisions
 		AssignTask(Commander* cmd, Task* task) { commander = cmd; this->task = task; }
 		virtual void execute() override;
 	};
+	
+	//---------------------------------------------------------------
+	// Custom
+	//---------------------------------------------------------------
+
+	class HasRequiredResources : public DecisionTreeNode
+	{
+	public:
+		Commander* commander;
+		EMaterialResourceType goal;
+
+		DecisionTreeNode* woodNode;
+		DecisionTreeNode* coalNode;
+		DecisionTreeNode* ironNode;
+		DecisionTreeNode* swordsNode;
+		DecisionTreeNode* continueNode;
+
+		HasRequiredResources(Commander* cmd, EMaterialResourceType goal) { commander = cmd; this->goal = goal; }
+		void SetupNodes(DecisionTreeNode* wood, DecisionTreeNode* coal, DecisionTreeNode* iron, DecisionTreeNode* swords)
+		{
+			woodNode = wood;
+			coalNode = coal;
+			ironNode = iron;
+			swordsNode = swords;
+		}
+
+		virtual DecisionTreeNode* makeDecision() override;
+	};
+
 }

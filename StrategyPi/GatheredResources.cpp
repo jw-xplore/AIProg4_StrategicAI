@@ -3,10 +3,10 @@
 
 GatheredResources::GatheredResources()
 {
-	wood = 1000;
-	coal = 1000;
-	iron = 1000;
-	swords = 5;
+	wood = 0;
+	coal = 0;
+	iron = 0;
+	swords = 0;
 	soldiers = 0;
 
 	// Define prices 
