@@ -127,6 +127,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Commander.cpp" />
+    <ClCompile Include="CommanderDecisions.cpp" />
     <ClCompile Include="ComponentsManager.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />

@@ -4,9 +4,9 @@
 GatheredResources::GatheredResources()
 {
 	wood = 1000;
-	coal = 1000;
-	iron = 1000;
-	swords = 5;
+	coal = 0;
+	iron = 0;
+	swords = 0;
 	soldiers = 0;
 
 	// Define prices 
@@ -28,6 +28,44 @@ void GatheredResources::AddResource(EMaterialResourceType type, int amount)
 	case EMaterialResourceType::Sword: swords += amount; break;
 	case EMaterialResourceType::Soldier: soldiers += amount; break;
 	}
+}
+
+bool GatheredResources::CanExchangeResource(EMaterialResourceType type)
+{
+	PlayerResources price = prices[type];
+
+	if (wood - price.wood < 0)
+		return false;
+
+	if (coal - price.coal < 0)
+		return false;
+
+	if (iron - price.iron < 0)
+		return false;
+
+	if (swords - price.swords < 0)
+		return false;
+
+	if (soldiers - price.soldiers < 0)
+		return false;
+
+	return true;
+}
+
+bool GatheredResources::HasEnoughResourceType(EMaterialResourceType goal, EMaterialResourceType checkedType)
+{
+	PlayerResources price = prices[goal];
+
+	switch (checkedType)
+	{
+	case EMaterialResourceType::Wood: return wood - price.wood > 0;
+	case EMaterialResourceType::Coal: return coal - price.coal > 0;
+	case EMaterialResourceType::Iron: return iron - price.iron > 0;
+	case EMaterialResourceType::Sword: return swords - price.swords > 0;
+	case EMaterialResourceType::Soldier: return soldiers - price.soldiers > 0;
+	}
+
+	return false;
 }
 
 bool GatheredResources::ExchangeToResource(EMaterialResourceType type)

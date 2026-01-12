@@ -40,6 +40,7 @@ public:
     bool* discovered; // Blocks discovered by NCPs, Undiscovered will be covered in fog
     MaterialResource** mapResources; // What NPCs can mine
 
+    // Textures
     Texture2D* stoneTexture;
     Texture2D* fogTexture;
     Texture2D* treeTexture;
@@ -50,6 +51,10 @@ public:
     Texture2D* barracksTexture;
 
     EntityManager* entityManager;
+
+    // Helper data
+    bool hSmithyExists;
+    bool hBarracksExists;
 
     World(const char* path, ComponentsManager* cmpManager, EntityManager* entManager);
     ~World();

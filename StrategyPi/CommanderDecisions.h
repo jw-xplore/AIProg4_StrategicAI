@@ -6,32 +6,54 @@ Defines all decisions and actions blocks used for commander
 */
 
 class Commander;
+class Task;
+enum EMaterialResourceType;
 
-//---------------------------------------------------------------
-// Decisions
-//---------------------------------------------------------------
-
-class BuildingExists : public Decision
+namespace CommanderDecisions
 {
-	Commander* commander;
-	BuildingExists(Commander* cmd) { commander = cmd; }
 
-	virtual bool pass() override
+	//---------------------------------------------------------------
+	// Decisions
+	//---------------------------------------------------------------
+
+	class BuildingExists : public Decision
 	{
-		return true;
-	}
-};
+	public:
+		Commander* commander;
+		EMaterialResourceType buildingType;
 
-//---------------------------------------------------------------
-// Actions
-//---------------------------------------------------------------
+		BuildingExists(Commander* cmd, EMaterialResourceType type) { commander = cmd; buildingType = type; }
+		virtual bool pass() override;
+	};
 
-/*
-template <typename T>class BuildingExists : public Action<Commander>
-{
-	void execute(World& actor) override
+	class HasEnoughResources : public Decision
 	{
+	public:
+		Commander* commander;
+		EMaterialResourceType goal;
+		EMaterialResourceType type;
 
-	}
-};
-*/
+		HasEnoughResources(Commander* cmd, EMaterialResourceType goal, EMaterialResourceType type)
+		{ 
+			commander = cmd;
+			this->goal = goal;
+			this->type = type;
+		}
+
+		virtual bool pass() override;
+	};
+
+	//---------------------------------------------------------------
+	// Actions
+	//---------------------------------------------------------------
+
+	class AssignTask : public Action
+	{
+	public:
+		Commander* commander;
+		Task* task;
+
+		AssignTask(Commander* cmd, Task* task) { commander = cmd; this->task = task; }
+		virtual void execute() override;
+	};
+}

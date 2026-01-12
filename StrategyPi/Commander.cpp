@@ -74,21 +74,21 @@ struct Commander::Data
 		
 	// Decisions
 	DecisionTreeNode* soldierCreateTree;
-
-	// Resources
-	GatheredResources* resources;
+	DecisionTreeNode* gatherResourceTree;
 };
 
 // Commander
-Commander::Commander(ComponentsManager* componentManager, EntityManager* entityManager)
+Commander::Commander(ComponentsManager* componentManager, EntityManager* entityManager, World* world)
 {
 	data = new Commander::Data{};
 	this->entityManager = entityManager;
+	this->world = world;
 
-	data->resources = componentManager->gatheredResources;
+	resources = componentManager->gatheredResources;
 	goalDone = false;
 
 	// Test command
+	/*
 	Task testTask = data->buildBarracksBlueprint;
 	testTask.assignee = this->entityManager->workers[0];
 	testTask.repeat = false;
@@ -96,21 +96,29 @@ Commander::Commander(ComponentsManager* componentManager, EntityManager* entityM
 	Task testTask2 = data->gatherWoodBlueprint;
 	testTask2.assignee = this->entityManager->workers[1];
 	testTask2.repeat = true;
+	*/
 
-	activeTasks.push_back(testTask);
+	//activeTasks.push_back(testTask);
 	//activeTasks.push_back(testTask2);
+
+	// Test decision
+	DefineDecisionTrees();
+
+	Action* recruitAction = dynamic_cast<Action*>(data->soldierCreateTree->makeDecision());
+	recruitAction->execute();
 }
 
 Commander::~Commander()
 {
 	activeTasks.clear();
+	delete data->soldierCreateTree;
 	delete data;
 }
 
 void Commander::Update(float dTime)
 {
 	// Goal fullfilled check
-	if (data->resources->soldiers >= 20)
+	if (resources->soldiers >= 20)
 	{
 		goalDone = true;
 		return;
@@ -131,23 +139,82 @@ void Commander::DrawUI()
 
 	int yPos = GlobalVars::SCREEN_HEIGHT - 50;
 
-	std::string strWood = "Wood: " + std::to_string(data->resources->wood);
+	std::string strWood = "Wood: " + std::to_string(resources->wood);
 	char const* txtWood = strWood.c_str();
 	DrawText(txtWood, 50, yPos, 24, BLACK);
 
-	std::string strCoal = "Coal: " + std::to_string(data->resources->coal);
+	std::string strCoal = "Coal: " + std::to_string(resources->coal);
 	char const* txtCoal = strCoal.c_str();
 	DrawText(txtCoal, 180, yPos, 24, BLACK);
 
-	std::string strIron = "Iron: " + std::to_string(data->resources->iron);
+	std::string strIron = "Iron: " + std::to_string(resources->iron);
 	char const* txtIron = strIron.c_str();
 	DrawText(txtIron, 300, yPos, 24, BLACK);
 
-	std::string strSwords = "Swords: " + std::to_string(data->resources->swords);
+	std::string strSwords = "Swords: " + std::to_string(resources->swords);
 	char const* txtSwords = strSwords.c_str();
 	DrawText(txtSwords, 450, yPos, 24, BLACK);
 
-	std::string stSoldiers = "Soldiers: " + std::to_string(data->resources->soldiers);
+	std::string stSoldiers = "Soldiers: " + std::to_string(resources->soldiers);
 	char const* txtSoldiers = stSoldiers.c_str();
 	DrawText(txtSoldiers, 600, yPos, 24, BLACK);
+}
+
+void Commander::AssignTask(Task& task)
+{
+	// Find free worker
+
+	// Give task to worker
+	Task testTask = task;
+	testTask.assignee = this->entityManager->workers[0];
+	testTask.repeat = false;
+
+	activeTasks.push_back(testTask);
+}
+
+void Commander::DefineDecisionTrees()
+{
+	// Create soldier - main consideration
+	data->soldierCreateTree = new CommanderDecisions::BuildingExists(this, EMaterialResourceType::BuildingBarracks);
+
+	Decision* buildingDec = dynamic_cast<Decision*>(data->soldierCreateTree);
+	buildingDec->positive = GatherResourcesTree(EMaterialResourceType::Soldier);
+
+	Decision* resourceDec = dynamic_cast<Decision*>(buildingDec->positive);
+	// Action* resourceDecEnd = dynamic_cast<Action*>(data->soldierCreateTree->makeDecision()); NOTE: Need to get ref to last decision
+	resourceDec->positive = new CommanderDecisions::AssignTask(this, &data->recruitSoldierBlueprint);
+
+	//buildingDec->positive = new CommanderDecisions::HasEnoughResources(this, EMaterialResourceType::BuildingBarracks, EMaterialResourceType::Wood); // Has enough wood?
+	//buildingDec->positive = new CommanderDecisions::AssignTask(this, &data->recruitSoldierBlueprint);
+	// buildingDec->negative =
+
+	// Resources gathering
+	//data->gatherResourceTree = new CommanderDecisions::HasEnoughResources(this, EMaterialResourceType::BuildingBarracks, EMaterialResourceType::Wood);
+}
+
+DecisionTreeNode* Commander::GatherResourcesTree(EMaterialResourceType goal)
+{
+	DecisionTreeNode* gatherTree = new CommanderDecisions::HasEnoughResources(this, goal, EMaterialResourceType::Wood);
+
+	// Enought wood?
+	Decision* woodDec = dynamic_cast<Decision*>(gatherTree);
+	woodDec->positive = new CommanderDecisions::HasEnoughResources(this, goal, EMaterialResourceType::Iron);
+	woodDec->negative = new CommanderDecisions::AssignTask(this, &data->gatherWoodBlueprint); // Gather wood
+
+	// Enough iron?
+	Decision* ironDec = dynamic_cast<Decision*>(woodDec->positive);
+	ironDec->positive = new CommanderDecisions::HasEnoughResources(this, goal, EMaterialResourceType::Coal);
+	ironDec->negative = new CommanderDecisions::AssignTask(this, &data->gatherIronBlueprint); // Gather iron
+
+	// Enough coal?
+	Decision* coalDec = dynamic_cast<Decision*>(ironDec->positive);
+	coalDec->positive = new CommanderDecisions::HasEnoughResources(this, goal, EMaterialResourceType::Sword);
+	coalDec->negative = new CommanderDecisions::AssignTask(this, &data->gatherCoalBlueprint); // Gather coal
+
+	// Enough swords?
+	Decision* swordDec = dynamic_cast<Decision*>(coalDec->positive);
+	// Define positive response at outside
+	swordDec->negative = new CommanderDecisions::AssignTask(this, &data->createSwordBlueprint); // Create sword
+
+	return gatherTree;
 }

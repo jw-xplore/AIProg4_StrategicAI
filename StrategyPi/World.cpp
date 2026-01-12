@@ -200,4 +200,14 @@ void World::SetResource(int x, int y, EMaterialResourceType type, int amount)
     {
         mapResources[y][x].type = EMaterialResourceType::None;
     }
+
+    // Cache helpers
+    if (amount < 1)
+        return;
+
+    if (type == EMaterialResourceType::BuildingSmithy)
+        hSmithyExists = true;
+
+    if (type == EMaterialResourceType::BuildingBarracks)
+        hBarracksExists = true;
 }

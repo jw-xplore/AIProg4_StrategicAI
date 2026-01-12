@@ -54,6 +54,9 @@
     <ClCompile Include="GatheredResources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CommanderDecisions.cpp">
+      <Filter>Decisions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComponentsManager.h">

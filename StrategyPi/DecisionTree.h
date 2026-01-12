@@ -4,14 +4,13 @@ class DecisionTreeNode
 {
 public:
 	DecisionTreeNode() {}
+	virtual ~DecisionTreeNode() {}
 	virtual DecisionTreeNode* makeDecision() { return this;  }
 };
 
 class Action : public DecisionTreeNode
 {
 public:
-	Action* finalAction;
-
 	virtual void execute() {}
 
 	DecisionTreeNode* makeDecision() override

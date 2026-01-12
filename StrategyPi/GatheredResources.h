@@ -32,6 +32,8 @@ public:
 	GatheredResources();
 	
 	void AddResource(EMaterialResourceType type, int amount);
+	bool CanExchangeResource(EMaterialResourceType type); // Returns if all resources are in right amount
+	bool HasEnoughResourceType(EMaterialResourceType goal, EMaterialResourceType checkedType); // Check if there is enough of one specific resource
 	bool ExchangeToResource(EMaterialResourceType type);
 };
 
