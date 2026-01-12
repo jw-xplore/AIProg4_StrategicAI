@@ -185,7 +185,7 @@ ESubtaskState SubtaskDefinitions::CreateSword(Worker& worker)
 		return ESubtaskState::Canceled;
 
 	// Create sword
-	if (worker.gatheredResources->AddSword())
+	if (worker.gatheredResources->ExchangeToResource(EMaterialResourceType::Sword))
 		return ESubtaskState::Finnished;
 
 	return ESubtaskState::Canceled;
@@ -201,7 +201,7 @@ ESubtaskState SubtaskDefinitions::RecruitSoldier(Worker& worker)
 		return ESubtaskState::Canceled;
 
 	// Recruit soldier
-	if (worker.gatheredResources->AddSoldier())
+	if (worker.gatheredResources->ExchangeToResource(EMaterialResourceType::Soldier))
 		return ESubtaskState::Finnished;
 
 	return ESubtaskState::Canceled;

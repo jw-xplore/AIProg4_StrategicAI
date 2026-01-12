@@ -3,11 +3,19 @@
 
 GatheredResources::GatheredResources()
 {
-	wood = 1;
-	coal = 2;
-	iron = 3;
-	swords = 4;
-	soldiers = 5;
+	wood = 1000;
+	coal = 1000;
+	iron = 1000;
+	swords = 5;
+	soldiers = 0;
+
+	// Define prices 
+	prices = {
+		{ EMaterialResourceType::BuildingSmithy, PlayerResources(100, 100, 50)},
+		{ EMaterialResourceType::BuildingBarracks, PlayerResources(150, 20, 100)},
+		{ EMaterialResourceType::Sword, PlayerResources(2, 10, 20, -1)},
+		{ EMaterialResourceType::Soldier, PlayerResources(10, 0, 50, 1, -1)},
+	};
 }
 
 void GatheredResources::AddResource(EMaterialResourceType type, int amount)
@@ -22,6 +30,37 @@ void GatheredResources::AddResource(EMaterialResourceType type, int amount)
 	}
 }
 
+bool GatheredResources::ExchangeToResource(EMaterialResourceType type)
+{
+	PlayerResources price = prices[type];
+
+	// Check has enought resources
+	if (wood - price.wood < 0)
+		return false;
+
+	if (coal - price.coal < 0)
+		return false;
+
+	if (iron - price.iron < 0)
+		return false;
+
+	if (swords - price.swords < 0)
+		return false;
+
+	if (soldiers - price.soldiers < 0)
+		return false;
+
+	// Calculate
+	wood -= price.wood;
+	coal -= price.coal;
+	iron -= price.iron;
+	swords -= price.swords;
+	soldiers -= price.soldiers;
+
+	return true;
+}
+
+/*
 bool GatheredResources::AddSword()
 {
 	// Check materials
@@ -59,3 +98,4 @@ bool GatheredResources::AddSoldier()
 
 	return true;
 }
+*/

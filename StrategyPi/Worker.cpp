@@ -202,6 +202,11 @@ bool Worker::CreateBuilding(EMaterialResourceType type, float dTime)
     if (currentPosResource.type != EMaterialResourceType::None)
         return false;
 
+    // Check and exchange resources
+    if (!gatheredResources->ExchangeToResource(type))
+        return false;
+
     // Create building
     world->SetResource(x, y, type, 1);
+    return true;
 }

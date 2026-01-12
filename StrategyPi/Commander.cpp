@@ -61,7 +61,7 @@ struct Commander::Data
 		});
 
 	Task recruitSoldierBlueprint = Task({
-		[](Worker& worker, float dTime) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::BuildingSmithy);  },
+		[](Worker& worker, float dTime) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::BuildingBarracks);  },
 		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
 		[](Worker& worker, float dTime) { return SubtaskDefinitions::RecruitSoldier(worker); },
 		});
@@ -89,16 +89,16 @@ Commander::Commander(ComponentsManager* componentManager, EntityManager* entityM
 	goalDone = false;
 
 	// Test command
-	Task testTask = data->gatherWoodBlueprint;
+	Task testTask = data->buildBarracksBlueprint;
 	testTask.assignee = this->entityManager->workers[0];
-	testTask.repeat = true;
+	testTask.repeat = false;
 
 	Task testTask2 = data->gatherWoodBlueprint;
 	testTask2.assignee = this->entityManager->workers[1];
 	testTask2.repeat = true;
 
 	activeTasks.push_back(testTask);
-	activeTasks.push_back(testTask2);
+	//activeTasks.push_back(testTask2);
 }
 
 Commander::~Commander()

@@ -1,15 +1,27 @@
 #pragma once
+#include <map>
 
 enum EMaterialResourceType;
+
+struct PlayerResources
+{
+	int wood;
+	int coal;
+	int iron;
+	int swords;
+	int soldiers;
+
+	PlayerResources(int wo = 0, int co = 0, int ir = 0, int sw = 0, int so = 0) :
+		wood{ wo }, coal{ co }, iron{ ir }, swords{ sw }, soldiers{ so }
+	{
+	}
+};
 
 class GatheredResources
 {
 public: 
-	const int SWORD_COAL_COST = 5;
-	const int SWORD_IRON_COST = 3;
-	const int SOLDIER_SWORD_COST = 1;
-	const int SOLDIER_IRON_COST = 2;
-	const int SOLDIER_WOOD_COST = 3;
+	// Definies prices of good and buildings
+	std::map<EMaterialResourceType, PlayerResources> prices;
 
 	int wood;
 	int coal;
@@ -20,7 +32,6 @@ public:
 	GatheredResources();
 	
 	void AddResource(EMaterialResourceType type, int amount);
-	bool AddSword();
-	bool AddSoldier();
+	bool ExchangeToResource(EMaterialResourceType type);
 };
 
