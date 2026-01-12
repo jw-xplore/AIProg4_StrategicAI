@@ -4,9 +4,9 @@
 GatheredResources::GatheredResources()
 {
 	wood = 1000;
-	coal = 0;
-	iron = 0;
-	swords = 0;
+	coal = 1000;
+	iron = 1000;
+	swords = 5;
 	soldiers = 0;
 
 	// Define prices 
@@ -97,43 +97,3 @@ bool GatheredResources::ExchangeToResource(EMaterialResourceType type)
 
 	return true;
 }
-
-/*
-bool GatheredResources::AddSword()
-{
-	// Check materials
-	if (iron < SWORD_IRON_COST)
-		return false;
-
-	if (coal < SWORD_COAL_COST)
-		return false;
-
-	// Exchange resources 
-	iron -= SWORD_IRON_COST;
-	coal -= SWORD_COAL_COST;
-	swords++;
-
-	return true;
-}
-
-bool GatheredResources::AddSoldier()
-{
-	// Check materials
-	if (iron < SOLDIER_IRON_COST)
-		return false;
-
-	if (wood < SOLDIER_WOOD_COST)
-		return false;
-
-	if (swords < SOLDIER_SWORD_COST)
-		return false;
-
-	// Exchange resources 
-	iron -= SOLDIER_IRON_COST;
-	wood -= SOLDIER_WOOD_COST;
-	swords -= SOLDIER_SWORD_COST;
-	soldiers++;
-
-	return true;
-}
-*/

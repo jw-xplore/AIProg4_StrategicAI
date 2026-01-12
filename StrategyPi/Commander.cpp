@@ -178,26 +178,22 @@ void Commander::DefineDecisionTrees()
 	data->soldierCreateTree = new CommanderDecisions::BuildingExists(this, EMaterialResourceType::BuildingBarracks);
 
 	Decision* buildingDec = dynamic_cast<Decision*>(data->soldierCreateTree);
-	buildingDec->positive = GatherResourcesTree(EMaterialResourceType::Soldier);
+	Decision* resourceDecFinal = dynamic_cast<Decision*>(GatherResourcesTree(EMaterialResourceType::Soldier, buildingDec->positive));
+	resourceDecFinal->positive = new CommanderDecisions::AssignTask(this, &data->recruitSoldierBlueprint);
 
-	Decision* resourceDec = dynamic_cast<Decision*>(buildingDec->positive);
-	// Action* resourceDecEnd = dynamic_cast<Action*>(data->soldierCreateTree->makeDecision()); NOTE: Need to get ref to last decision
-	resourceDec->positive = new CommanderDecisions::AssignTask(this, &data->recruitSoldierBlueprint);
+	// Build barrack if none exists
+	resourceDecFinal = dynamic_cast<Decision*>(GatherResourcesTree(EMaterialResourceType::BuildingBarracks, buildingDec->negative));
+	resourceDecFinal->positive = new CommanderDecisions::AssignTask(this, &data->buildBarracksBlueprint);
 
-	//buildingDec->positive = new CommanderDecisions::HasEnoughResources(this, EMaterialResourceType::BuildingBarracks, EMaterialResourceType::Wood); // Has enough wood?
-	//buildingDec->positive = new CommanderDecisions::AssignTask(this, &data->recruitSoldierBlueprint);
-	// buildingDec->negative =
-
-	// Resources gathering
-	//data->gatherResourceTree = new CommanderDecisions::HasEnoughResources(this, EMaterialResourceType::BuildingBarracks, EMaterialResourceType::Wood);
+	resourceDecFinal = dynamic_cast<Decision*>(GatherResourcesTree(EMaterialResourceType::BuildingBarracks, resourceDecFinal->negative));
 }
 
-DecisionTreeNode* Commander::GatherResourcesTree(EMaterialResourceType goal)
+DecisionTreeNode* Commander::GatherResourcesTree(EMaterialResourceType goal, DecisionTreeNode*& connection)
 {
-	DecisionTreeNode* gatherTree = new CommanderDecisions::HasEnoughResources(this, goal, EMaterialResourceType::Wood);
+	connection = new CommanderDecisions::HasEnoughResources(this, goal, EMaterialResourceType::Wood);
 
 	// Enought wood?
-	Decision* woodDec = dynamic_cast<Decision*>(gatherTree);
+	Decision* woodDec = dynamic_cast<Decision*>(connection);
 	woodDec->positive = new CommanderDecisions::HasEnoughResources(this, goal, EMaterialResourceType::Iron);
 	woodDec->negative = new CommanderDecisions::AssignTask(this, &data->gatherWoodBlueprint); // Gather wood
 
@@ -216,5 +212,5 @@ DecisionTreeNode* Commander::GatherResourcesTree(EMaterialResourceType goal)
 	// Define positive response at outside
 	swordDec->negative = new CommanderDecisions::AssignTask(this, &data->createSwordBlueprint); // Create sword
 
-	return gatherTree;
+	return swordDec;
 }

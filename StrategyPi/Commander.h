@@ -39,7 +39,7 @@ public:
 	void DrawUI();
 
 	void DefineDecisionTrees();
-	DecisionTreeNode* GatherResourcesTree(EMaterialResourceType goal);
+	DecisionTreeNode* GatherResourcesTree(EMaterialResourceType goal, DecisionTreeNode*& connection);
 	void AssignTask(Task& task);
 };
 
