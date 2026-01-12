@@ -141,8 +141,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Commander.h" />
+    <ClInclude Include="CommanderDecisions.h" />
     <ClInclude Include="ComponentsManager.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="DecisionTree.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="GatheredResources.h" />

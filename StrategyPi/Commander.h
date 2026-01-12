@@ -7,6 +7,7 @@ class Worker;
 class Task;
 class Subtask;
 class ComponentsManager;
+class DecisionTreeNode;
 
 /*
 Assigns tasks to NPCs and manages their resources like path
@@ -21,6 +22,9 @@ public:
 	EntityManager* entityManager;
 
 	std::vector<Task> activeTasks;
+
+	// Decision trees
+	bool goalDone;
 
 	Commander(ComponentsManager* componentManager, EntityManager* entityManager);
 	~Commander();

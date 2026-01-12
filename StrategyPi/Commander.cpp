@@ -8,14 +8,13 @@
 #include <string>
 #include "GatheredResources.h"
 #include "ComponentsManager.h"
+#include "DecisionTree.h"
+#include "CommanderDecisions.h"
 
 //Commander data storage
 struct Commander::Data
 {
-	// Task types
-
-	// TODO: Define exploration task
-
+	// Worker tasks definitions
 	Task gatherWoodBlueprint = Task({
 		[](Worker& worker, float dTime) { return SubtaskDefinitions::FindNearestResource(worker, EMaterialResourceType::Wood);  },
 		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
@@ -72,6 +71,9 @@ struct Commander::Data
 		SubtaskDefinitions::Discover,
 		[](Worker& worker, float dTime) { return SubtaskDefinitions::Arrive(worker); },
 		});
+		
+	// Decisions
+	DecisionTreeNode* soldierCreateTree;
 
 	// Resources
 	GatheredResources* resources;
@@ -84,6 +86,7 @@ Commander::Commander(ComponentsManager* componentManager, EntityManager* entityM
 	this->entityManager = entityManager;
 
 	data->resources = componentManager->gatheredResources;
+	goalDone = false;
 
 	// Test command
 	Task testTask = data->gatherWoodBlueprint;
@@ -106,6 +109,16 @@ Commander::~Commander()
 
 void Commander::Update(float dTime)
 {
+	// Goal fullfilled check
+	if (data->resources->soldiers >= 20)
+	{
+		goalDone = true;
+		return;
+	}
+
+	// Decision making
+
+	// Tasks update
 	for (size_t i = 0; i < activeTasks.size(); i++)
 	{
 		activeTasks[i].Update(dTime);
