@@ -3,6 +3,16 @@
 class ComponentsManager;
 class EntityManager;
 
+enum ETerrainType
+{
+    Grass,
+    Swamp,
+    Rock,
+    Water,
+    Trees,
+    ETerrainTypeCount
+};
+
 /*
 Material definition
 */
@@ -49,6 +59,9 @@ public:
     Texture2D* storageTexture;
     Texture2D* smithyTexture;
     Texture2D* barracksTexture;
+
+    // Colors
+    const Color cGrass = { 255, 255, 255, 255 };
 
     EntityManager* entityManager;
 

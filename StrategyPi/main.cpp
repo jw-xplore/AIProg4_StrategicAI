@@ -8,6 +8,7 @@
 #include "SteeringBehavior.h"
 #include "Commander.h"
 #include <string>
+#include "Database.h"
 
 // Game vars
 extern float TIME_SCALE = 1;
@@ -58,13 +59,13 @@ int main()
     // World and components
     components = new ComponentsManager();
     entityManager = new EntityManager();
-    world = new World("resources/map.txt", components, entityManager);
+    world = new World("resources/WorldMap.txt", components, entityManager);
     components->InitPathfinding(world);
   
 
     // Setup entities
-    entityManager->workers.push_back(new Worker(components, world, { 100, 100}));
-    entityManager->workers.push_back(new Worker(components, world, { 200, 300 }));
+    //entityManager->workers.push_back(new Worker(components, world, { 100, 100}));
+    //entityManager->workers.push_back(new Worker(components, world, { 200, 300 }));
     //entityManager->workers.push_back(std::make_shared<Worker>(components, world));
     //entityManager->workers.push_back(std::make_shared<Worker>(components, world));
 
@@ -79,6 +80,8 @@ int main()
 
     commander = new Commander(components, entityManager, world);
 
+    GameDB::Database db;
+
     // Gameloop
     while (!WindowShouldClose())
     {
@@ -90,7 +93,7 @@ int main()
 
         // Rendering
         BeginDrawing();
-        ClearBackground(darkGreen);
+        ClearBackground(BLACK);
         world->Draw();
         entityManager->DrawEntities();
         commander->DrawUI();

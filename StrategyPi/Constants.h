@@ -2,8 +2,8 @@
 
 namespace GlobalVars
 {
-	const int SCREEN_WIDTH = 800;
-	const int SCREEN_HEIGHT = 600;
+	const int SCREEN_WIDTH = 1600;
+	const int SCREEN_HEIGHT = 1000;
 
-	const int TILE_SIZE = 32;
+	const int TILE_SIZE = 8;
 }

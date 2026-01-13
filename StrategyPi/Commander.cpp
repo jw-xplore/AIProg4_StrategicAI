@@ -104,8 +104,8 @@ Commander::Commander(ComponentsManager* componentManager, EntityManager* entityM
 	// Test decision
 	DefineDecisionTrees();
 
-	Action* recruitAction = dynamic_cast<Action*>(data->soldierCreateTree->makeDecision());
-	recruitAction->execute();
+	//Action* recruitAction = dynamic_cast<Action*>(data->soldierCreateTree->makeDecision());
+	//recruitAction->execute();
 }
 
 Commander::~Commander()

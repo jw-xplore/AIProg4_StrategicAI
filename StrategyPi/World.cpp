@@ -112,7 +112,8 @@ bool World::LoadMap(const char* path)
 		    map[currentLine] = cstr;
 
 			currentLine++;
-			this->width = line.size();
+            if (this->width == 0)
+			    this->width = line.size();
 		}
 
         // Define resources
@@ -138,12 +139,14 @@ bool World::LoadMap(const char* path)
         }
 
         // Clearup
+        /*
         for (int y = 0; y < height; y++)
         {
             delete[] map[y];
         }
 
         delete[] map;
+        */
 
         // Stop reading
 		file.close();
@@ -171,13 +174,14 @@ void World::Draw()
         }
 
         // Show resources
-        if (mapResources[y][x].count <= 0)
-            continue;
+        //if (mapResources[y][x].count <= 0)
+        //    continue;
 
         Texture2D texture;
 
         switch (mapResources[y][x].type)
         {
+            /*
             case EMaterialResourceType::Wood: texture = *treeTexture; break;
             case EMaterialResourceType::Coal: texture = *coalTexture; break;
             case EMaterialResourceType::Iron: texture = *ironTexture; break;
@@ -185,9 +189,15 @@ void World::Draw()
             case EMaterialResourceType::BuildingStorage: texture = *storageTexture; break;
             case EMaterialResourceType::BuildingSmithy: texture = *smithyTexture; break;
             case EMaterialResourceType::BuildingBarracks: texture = *barracksTexture; break;
+            */
+
+            case EMaterialResourceType::Wood: texture = *treeTexture; break;
+            case EMaterialResourceType::Coal: texture = *coalTexture; break;
+            case EMaterialResourceType::Iron: texture = *ironTexture; break;
         }
 
-        DrawTexture(texture, x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, WHITE);
+        //DrawTexture(texture, x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, WHITE);
+        DrawRectangle(x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, GlobalVars::TILE_SIZE, GlobalVars::TILE_SIZE, cGrass);
     }
 }
 
