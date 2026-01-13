@@ -22,6 +22,7 @@ bool BuildingExists::pass()
 	return false;
 }
 
+// NOTE: This should be replaced with HasRequiredResources
 bool HasEnoughResources::pass()
 {
 	return commander->resources->HasEnoughResourceType(goal, type);
