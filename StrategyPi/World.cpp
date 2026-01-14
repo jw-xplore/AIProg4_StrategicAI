@@ -10,6 +10,7 @@
 #include <string>
 #include <algorithm>
 #include "Constants.h"
+#include "Database.h"
 
 World::World(const char* path, ComponentsManager* cmpManager, EntityManager* entManager)
 {
@@ -49,9 +50,11 @@ World::~World()
     for (int y = 0; y < height; y++)
     {
         delete[] mapResources[y];
+        delete[] mapTerrain[y];
     }
 
     delete[] mapResources;
+    delete[] mapTerrain;
 }
 
 void World::Update(float dTime)
@@ -118,35 +121,47 @@ bool World::LoadMap(const char* path)
 
         // Define resources
         worldSize = width * height;
-        mapResources = new MaterialResource*[height];
+        mapTerrain = new ETerrainType*[height];
+        mapResources = new MaterialResource*[height]; // Safe keeping
+
+        GameDB::Database* db = GameDB::Database::Instance();
 
         for (int y = 0; y < height; y++)
         {
-            mapResources[y] = new MaterialResource[width];
+            mapTerrain[y] = new ETerrainType[width];
+            mapResources[y] = new MaterialResource[width]; // Safe keeping
 
             for (int x = 0; x < width; x++)
             {
-                switch (map[y][x])
+                // Terrain types
+                if (map[y][x] == db->terrains[ETerrainType::Grass].charIdentifier)
+                    mapTerrain[y][x] = ETerrainType::Grass;
+
+                if (map[y][x] == db->terrains[ETerrainType::Swamp].charIdentifier)
+                    mapTerrain[y][x] = ETerrainType::Swamp;
+
+                if (map[y][x] == db->terrains[ETerrainType::Water].charIdentifier)
+                    mapTerrain[y][x] = ETerrainType::Water;
+
+                if (map[y][x] == db->terrains[ETerrainType::Rock].charIdentifier)
+                    mapTerrain[y][x] = ETerrainType::Rock;
+
+                // Trees
+                if (map[y][x] == db->terrains[ETerrainType::Trees].charIdentifier)
                 {
-                case 'T': mapResources[y][x].type = EMaterialResourceType::Wood; mapResources[y][x].count = 50; break;
-                case 'C': mapResources[y][x].type = EMaterialResourceType::Coal; mapResources[y][x].count = 1000; break;
-                case 'I': mapResources[y][x].type = EMaterialResourceType::Iron; mapResources[y][x].count = 1000; break;
-                case 'X': mapResources[y][x].type = EMaterialResourceType::Wall; mapResources[y][x].count = 1; break;
-                case 'S': mapResources[y][x].type = EMaterialResourceType::BuildingStorage; mapResources[y][x].count = 1; break;
-                default: mapResources[y][x].type = EMaterialResourceType::None; break;
+                    mapTerrain[y][x] = ETerrainType::Grass;
+                    treeTiles.push_back(TreesTile(x, y, 5, GlobalVars::TILE_HALF_SIZE));
                 }
             }
         }
 
         // Clearup
-        /*
         for (int y = 0; y < height; y++)
         {
             delete[] map[y];
         }
 
         delete[] map;
-        */
 
         // Stop reading
 		file.close();
@@ -159,45 +174,46 @@ bool World::LoadMap(const char* path)
 
 void World::Draw()
 {
-    int x, y;
-
-    for (int i = 0; i < worldSize; i++)
+    for (int y = 0; y < height; y++)
     {
-        x = i % width;
-        y = i / width;
-
-        // Show fog 
-        if (!discovered[i])
+        for (int x = 0; x < width; x++)
         {
-            //DrawTexture(*fogTexture, x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, WHITE);
-            //continue;
-        }
-
-        // Show resources
-        //if (mapResources[y][x].count <= 0)
-        //    continue;
-
-        Texture2D texture;
-
-        switch (mapResources[y][x].type)
-        {
+            // Show fog 
             /*
-            case EMaterialResourceType::Wood: texture = *treeTexture; break;
-            case EMaterialResourceType::Coal: texture = *coalTexture; break;
-            case EMaterialResourceType::Iron: texture = *ironTexture; break;
-            case EMaterialResourceType::Wall: texture = *stoneTexture; break;
-            case EMaterialResourceType::BuildingStorage: texture = *storageTexture; break;
-            case EMaterialResourceType::BuildingSmithy: texture = *smithyTexture; break;
-            case EMaterialResourceType::BuildingBarracks: texture = *barracksTexture; break;
+            if (!discovered[i])
+            {
+                DrawTexture(*fogTexture, x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, WHITE);
+                continue;
+            }
             */
 
-            case EMaterialResourceType::Wood: texture = *treeTexture; break;
-            case EMaterialResourceType::Coal: texture = *coalTexture; break;
-            case EMaterialResourceType::Iron: texture = *ironTexture; break;
-        }
+            // Show terrain
+            Color col = cGrass;
 
-        //DrawTexture(texture, x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, WHITE);
-        DrawRectangle(x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, GlobalVars::TILE_SIZE, GlobalVars::TILE_SIZE, cGrass);
+            switch (mapTerrain[y][x])
+            {
+            case ETerrainType::Grass: col = cGrass; break;
+            case ETerrainType::Swamp: col = cSwamp; break;
+            case ETerrainType::Water: col = cWater; break;
+            case ETerrainType::Rock: col = cRock; break;
+            }
+
+            DrawRectangle(x * GlobalVars::TILE_SIZE, y * GlobalVars::TILE_SIZE, GlobalVars::TILE_SIZE, GlobalVars::TILE_SIZE, col);
+        }
+    }
+
+    // Show trees
+    for (size_t i = 0; i < treeTiles.size(); i++)
+    {
+        for (size_t t = 0; t < treeTiles[i].amount; t++)
+        {
+            Vector2 pos = { 
+                treeTiles[i].x * GlobalVars::TILE_SIZE + treeTiles[i].treePositions[t].x,
+                treeTiles[i].y * GlobalVars::TILE_SIZE + treeTiles[i].treePositions[t].y 
+            };
+
+            DrawCircle(pos.x, pos.y, 2, BROWN);
+        }
     }
 }
 

@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <vector>
 
 class ComponentsManager;
 class EntityManager;
@@ -14,6 +15,7 @@ enum ETerrainType
 };
 
 /*
+TODO: Remove this and split into meaningfull categories
 Material definition
 */
 enum EMaterialResourceType
@@ -33,8 +35,41 @@ enum EMaterialResourceType
 
 struct MaterialResource
 {
+    ETerrainType terrain;
     EMaterialResourceType type;
     int count;
+};
+
+struct Vector2Int
+{
+    int x, y;
+};
+
+struct TreesTile
+{
+    int x, y, amount;
+    Vector2Int* treePositions;
+
+    TreesTile(int tileX, int tileY, int count, int range)
+    {
+        x = tileX;
+        y = tileY;
+        amount = count;
+
+        // Setup tree positions
+        treePositions = new Vector2Int[count];
+
+        for (size_t i = 0; i < count; i++)
+        {
+            treePositions[i].x = GetRandomValue(-range, range);
+            treePositions[i].y = GetRandomValue(-range, range);
+        }
+    }
+
+    ~TreesTile()
+    {
+        //delete[] treePositions;
+    }
 };
 
 /*
@@ -48,7 +83,9 @@ public:
     // Map data
     int undiscoveredCount;
     bool* discovered; // Blocks discovered by NCPs, Undiscovered will be covered in fog
-    MaterialResource** mapResources; // What NPCs can mine
+    MaterialResource** mapResources; // What NPCs can mine - TODO: Remove this as this structure is not helping for current implementation
+    ETerrainType** mapTerrain;
+    std::vector<TreesTile> treeTiles;
 
     // Textures
     Texture2D* stoneTexture;
@@ -61,7 +98,10 @@ public:
     Texture2D* barracksTexture;
 
     // Colors
-    const Color cGrass = { 255, 255, 255, 255 };
+    const Color cGrass = { 70, 100, 52, 255 };
+    const Color cSwamp = { 37, 53, 18, 255 };
+    const Color cRock = { 82, 87, 89, 255 };
+    const Color cWater = { 56, 134, 219, 255 };
 
     EntityManager* entityManager;
 

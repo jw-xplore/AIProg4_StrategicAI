@@ -5,9 +5,9 @@
 
 #include "World.h"
 
-//using json = nlohmann::json;
-//using namespace nlohmann;
 using namespace GameDB;
+
+Database* Database::instance;
 
 Database::Database()
 {
@@ -40,6 +40,14 @@ Database::Database()
 	actionCostsResources = DefineActionCosts(jsonRes, "resourceActionCost", EActionResource::EActionResourceCount);
 	actionCostsTraining = DefineActionCosts(jsonRes, "trainingActionCost", EActionTraining::EActionTrainingCount);
 	actionCostsBuilding = DefineActionCosts(jsonRes, "buildingActionCost", EActionBuilding::EActionBuildingCount);
+}
+
+Database::~Database()
+{
+	delete[] terrains;
+	delete[] actionCostsResources;
+	delete[] actionCostsTraining;
+	delete[] actionCostsBuilding;
 }
 
 ActionCost* Database::DefineActionCosts(nlohmann::ordered_json& j, const char* section, int size)

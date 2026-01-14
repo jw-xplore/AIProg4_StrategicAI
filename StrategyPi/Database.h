@@ -64,6 +64,9 @@ namespace GameDB
 	//--------------------------------------------------
 	class Database
 	{
+	private:
+		static Database* instance;
+
 	public:
 		Terrain* terrains;
 		ActionCost* actionCostsResources;
@@ -71,6 +74,16 @@ namespace GameDB
 		ActionCost* actionCostsBuilding;
 
 		Database();
+		~Database();
+
+		static Database* Instance()
+		{
+			if (!instance)
+				instance = new Database();
+
+			return instance;
+		}
+
 		ActionCost* DefineActionCosts(nlohmann::ordered_json& j, const char* section, int size);
 	};
 }

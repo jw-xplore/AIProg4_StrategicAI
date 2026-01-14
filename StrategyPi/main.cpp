@@ -59,8 +59,9 @@ int main()
     // World and components
     components = new ComponentsManager();
     entityManager = new EntityManager();
+
     world = new World("resources/WorldMap.txt", components, entityManager);
-    components->InitPathfinding(world);
+    //components->InitPathfinding(world);
   
 
     // Setup entities
@@ -78,9 +79,7 @@ int main()
     //entityManager->workers[0]->SetPath(path);
     //entityManager->workers[1]->SetPath(path);
 
-    commander = new Commander(components, entityManager, world);
-
-    GameDB::Database db;
+    //commander = new Commander(components, entityManager, world);
 
     // Gameloop
     while (!WindowShouldClose())
@@ -89,14 +88,14 @@ int main()
         float dt = GetFrameTime() * TIME_SCALE;
         entityManager->UpdateEntities(dt);
         world->Update(dt);
-        commander->Update(dt);
+        //commander->Update(dt);
 
         // Rendering
         BeginDrawing();
         ClearBackground(BLACK);
         world->Draw();
         entityManager->DrawEntities();
-        commander->DrawUI();
+        //commander->DrawUI();
 
         //components->pathFinding->DrawGraph();
         //DrawPath(path);
@@ -114,6 +113,7 @@ int main()
     delete world;
     delete entityManager;
     delete components;
+    delete GameDB::Database::Instance();
 
     _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
     _CrtDumpMemoryLeaks();
